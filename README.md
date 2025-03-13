@@ -1,48 +1,151 @@
-# Astro Starter Kit: Basics
+# Bénin Immersion 🌍
 
-```sh
-npm create astro@latest -- --template basics
+![Bénin Immersion](public/img/benin-immersion-preview.png)
+
+## 🌟 Présentation
+
+Bénin Immersion est une plateforme web immersive dédiée à la promotion du tourisme au Bénin. Ce site offre une expérience utilisateur captivante qui met en valeur les richesses culturelles, naturelles et gastronomiques du pays, avec un accent particulier sur la culture vodou et les traditions ancestrales béninoises.
+
+**🔗 [Voir le site en ligne](https://benin-immersion.vercel.app/)**  
+**🔗 [Dépôt GitHub](https://github.com/votre-username/benin-immersion)**
+
+## ✨ Caractéristiques
+
+- **Design immersif** : Animations fluides et transitions élégantes inspirées de l'aspect mystique du vodou béninois
+- **Expérience interactive** : Effets de parallaxe, animations au défilement et interactions utilisateur avancées
+- **Sections thématiques** :
+  - 🏛️ **Culture** : Découverte des traditions, de l'histoire et du vodou béninois
+  - 🌿 **Nature** : Exploration des parcs nationaux et des paysages naturels
+  - 🧠 **Expériences** : Activités et expériences touristiques uniques
+  - 🍲 **Gastronomie** : Plats traditionnels et spécialités culinaires
+  - 📞 **Contact** : Formulaire de contact et informations pratiques
+- **Navigation intuitive** : Menu de navigation avec défilement fluide et animations
+- **Responsive design** : Expérience optimisée sur tous les appareils (desktop, tablette, mobile)
+
+## 🛠️ Technologies utilisées
+
+- **Frontend** :
+  - [Astro](https://astro.build/) - Framework web moderne et performant
+  - [Vue.js](https://vuejs.org/) - Framework JavaScript progressif
+  - [Tailwind CSS](https://tailwindcss.com/) - Framework CSS utilitaire
+  - [GSAP](https://greensock.com/gsap/) - Bibliothèque d'animation JavaScript
+  - [FontAwesome](https://fontawesome.com/) - Bibliothèque d'icônes
+
+- **Optimisation** :
+  - Lazy loading des images et composants
+  - Animations optimisées pour les performances
+  - Chargement progressif du contenu
+
+## 🎨 Palette de couleurs
+
+Le design utilise une palette inspirée des couleurs nationales du Bénin (vert, jaune, rouge) enrichie de teintes violettes représentant la spiritualité :
+
+- `benin-green` : Couleur principale du site
+- `benin-yellow` : Accents et appels à l'action
+- `benin-red` : Points d'attention
+- `vodou` : Sections liées à la spiritualité
+- `night` et `spirit` : Arrière-plans sombres
+
+## 🚀 Installation et démarrage
+
+### Prérequis
+
+- Node.js (v16 ou supérieur)
+- npm ou yarn
+
+### Installation
+
+1. Clonez le dépôt :
+```bash
+git clone https://github.com/votre-username/benin-immersion.git
+cd benin-immersion
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+2. Installez les dépendances :
+```bash
+npm install
+# ou
+yarn install
+```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+3. Lancez le serveur de développement :
+```bash
+npm run dev
+# ou
+yarn dev
+```
 
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
+4. Ouvrez votre navigateur à l'adresse : `http://localhost:3000`
 
-## 🚀 Project Structure
+### Build pour la production
 
-Inside of your Astro project, you'll see the following folders and files:
+```bash
+npm run build
+# ou
+yarn build
+```
 
-```text
-/
-├── public/
-│   └── favicon.svg
+## 📝 Structure du projet
+
+```
+benin-immersion/
+├── public/              # Ressources statiques (images, fonts)
 ├── src/
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
+│   ├── components/      # Composants Vue réutilisables
+│   │   ├── sections/    # Sections principales du site
+│   │   └── ui/          # Composants d'interface utilisateur
+│   ├── layouts/         # Layouts Astro
+│   ├── pages/           # Pages Astro
+│   └── styles/          # Styles globaux
+├── astro.config.mjs     # Configuration Astro
+├── tailwind.config.js   # Configuration Tailwind CSS
+└── package.json         # Dépendances et scripts
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## 🌟 Fonctionnalités principales
 
-## 🧞 Commands
+### Animations immersives
 
-All commands are run from the root of the project, from a terminal:
+Le site utilise GSAP pour créer des animations fluides et captivantes qui évoquent l'aspect mystique du vodou béninois. Les animations sont déclenchées au défilement, au survol ou lors d'interactions utilisateur.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+### Navigation interactive
 
-## 👀 Want to learn more?
+La navigation permet un défilement fluide vers les différentes sections du site, avec des effets visuels qui améliorent l'expérience utilisateur.
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+### Effets de parallaxe
+
+Des effets de parallaxe sont utilisés pour créer une sensation de profondeur et d'immersion, notamment dans les sections héro et gastronomie.
+
+### Responsive design
+
+Le site est entièrement responsive et offre une expérience optimale sur tous les appareils, des grands écrans de bureau aux smartphones.
+
+## 📸 Captures d'écran
+
+![Page d'accueil](public/img/screenshot-home.png)
+![Section Culture](public/img/screenshot-culture.png)
+![Section Gastronomie](public/img/screenshot-gastronomy.png)
+
+## 🤝 Contribution
+
+Les contributions sont les bienvenues ! N'hésitez pas à ouvrir une issue ou à soumettre une pull request.
+
+1. Forkez le projet
+2. Créez votre branche de fonctionnalité (`git checkout -b feature/amazing-feature`)
+3. Committez vos changements (`git commit -m 'Add some amazing feature'`)
+4. Poussez vers la branche (`git push origin feature/amazing-feature`)
+5. Ouvrez une Pull Request
+
+## 📄 Licence
+
+Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus d'informations.
+
+## 👏 Remerciements
+
+- Merci à tous ceux qui ont contribué à ce projet
+- Inspiration : culture et traditions béninoises
+- Photos : Unsplash et collections personnelles
+
+---
+
+Développé avec ❤️ pour promouvoir le tourisme au Bénin
