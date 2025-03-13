@@ -1,9 +1,9 @@
 <template>
-  <section id="gastronomie"   class="py-20 relative overflow-hidden bg-gradient-to-b from-white to-benin-yellow/5" ref="gastroSection">
+  <section id="gastronomie"   class="relative py-20 overflow-hidden bg-gradient-to-b from-white to-benin-yellow/5" ref="gastroSection">
     <!-- Éléments décoratifs améliorés -->
     <div class="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-white to-transparent"></div>
-    <div class="absolute -top-20 right-0 w-72 h-72 bg-benin-yellow/5 rounded-full blur-3xl"></div>
-    <div class="absolute bottom-20 left-10 w-80 h-80 bg-benin-green/5 rounded-full blur-3xl"></div>
+    <div class="absolute right-0 rounded-full -top-20 w-72 h-72 bg-benin-yellow/5 blur-3xl"></div>
+    <div class="absolute rounded-full bottom-20 left-10 w-80 h-80 bg-benin-green/5 blur-3xl"></div>
     
     <!-- Particules d'épices flottantes -->
     <div class="absolute inset-0 pointer-events-none" ref="spicesContainer"></div>
@@ -37,71 +37,73 @@
       </div>
     </div>
     
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+    <div class="relative px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
       <!-- Section Header avec animation -->
-      <div class="text-center mb-16 reveal-section" ref="headerSection">
-        <div class="inline-block p-1 px-3 bg-benin-yellow/20 rounded-lg mb-4 transition-opacity duration-700" ref="headerBadge">
-          <span class="text-benin-yellow font-medium">Saveurs & Traditions</span>
+      <div class="mb-16 text-center reveal-section" ref="headerSection">
+        <div class="inline-block p-1 px-3 mb-4 transition-opacity duration-700 rounded-lg bg-benin-yellow/20" ref="headerBadge">
+          <span class="font-medium text-benin-yellow">Saveurs & Traditions</span>
         </div>
-        <h2 class="section-title text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-gray-900 mb-6 transition-all duration-700" ref="headerTitle">
+        <h2 class="mb-6 text-3xl font-bold text-gray-900 transition-all duration-700 section-title sm:text-4xl lg:text-5xl font-display" ref="headerTitle">
           Découvrez la <span class="culinary-gradient">gastronomie béninoise</span>
         </h2>
-        <p class="max-w-3xl mx-auto text-gray-700 text-lg transition-all duration-700" ref="headerText">
+        <p class="max-w-3xl mx-auto text-lg text-gray-700 transition-all duration-700" ref="headerText">
           La cuisine béninoise est un véritable voyage sensoriel, mêlant saveurs épicées, ingrédients frais et techniques culinaires ancestrales. Laissez-vous tenter par ses plats emblématiques.
         </p>
       </div>
       
       <!-- Featured Dish: Amiwo avec effet parallaxe -->
-      <div class="mb-24 transform transition-all duration-700" ref="featuredDish">
-        <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+      <div class="mb-24 transition-all duration-700 transform" ref="featuredDish">
+        <div class="overflow-hidden bg-white shadow-xl rounded-2xl">
           <div class="md:flex">
-            <div class="md:w-1/2 relative">
-              <div class="h-80 md:h-full relative overflow-hidden">
+            <div class="relative md:w-1/2">
+              <div class="relative overflow-hidden h-80 md:h-full">
                 <!-- Image avec parallaxe -->
-                <div class="parallax-container h-full w-full" ref="parallaxImage">
+                <div class="w-full h-full parallax-container" ref="parallaxImage">
                   <img src="/img/amiwo-dish.webp" alt="Amiwo au poulet" 
-                       class="w-full h-full object-cover scale-110 transition-transform duration-700">
+                       class="object-cover w-full h-full transition-transform duration-700 scale-110">
                 </div>
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent md:bg-gradient-to-r md:from-black/60 md:to-transparent"></div>
                 
                 <!-- Vapeur animée au dessus du plat -->
-                <div class="absolute top-1/4 left-1/2 transform -translate-x-1/2 opacity-0 steam-effect" ref="steamEffect">
-                  <div class="w-20 h-20 relative">
-                    <div class="absolute w-6 h-10 bg-white/20 rounded-full blur-md animate-float-slow"></div>
-                    <div class="absolute w-4 h-8 bg-white/20 rounded-full blur-md animate-float-slow" style="left: 8px; animation-delay: 0.5s"></div>
-                    <div class="absolute w-5 h-12 bg-white/20 rounded-full blur-md animate-float-slow" style="left: 15px; animation-delay: 1s"></div>
+                <div class="absolute transform -translate-x-1/2 top-1/4 left-1/2 steam-effect" 
+                     :style="{ opacity: 0 }"
+                     ref="steamEffect">
+                  <div class="relative w-20 h-20">
+                    <div class="absolute w-6 h-10 rounded-full bg-white/20 blur-md animate-float-slow"></div>
+                    <div class="absolute w-4 h-8 rounded-full bg-white/20 blur-md animate-float-slow" style="left: 8px; animation-delay: 0.5s"></div>
+                    <div class="absolute w-5 h-12 rounded-full bg-white/20 blur-md animate-float-slow" style="left: 15px; animation-delay: 1s"></div>
                   </div>
                 </div>
                 
-                <div class="absolute bottom-4 left-4 md:bottom-8 md:left-8 text-white">
+                <div class="absolute text-white bottom-4 left-4 md:bottom-8 md:left-8">
                   <div class="flex items-center mb-2">
-                    <div class="w-2 h-2 bg-benin-yellow rounded-full mr-2"></div>
+                    <div class="w-2 h-2 mr-2 rounded-full bg-benin-yellow"></div>
                     <span class="text-sm text-white/80">Plat emblématique</span>
                   </div>
-                  <h3 class="text-2xl md:text-3xl font-display font-bold">Amiwo au poulet</h3>
+                  <h3 class="text-2xl font-bold md:text-3xl font-display">Amiwo au poulet</h3>
                 </div>
               </div>
             </div>
-            <div class="md:w-1/2 p-6 md:p-10">
+            <div class="p-6 md:w-1/2 md:p-10">
               <div class="flex items-center mb-4">
                 <div class="flex items-center mr-4">
-                  <i class="fas fa-pepper-hot text-benin-yellow mr-2"></i>
+                  <i class="mr-2 fas fa-pepper-hot text-benin-yellow"></i>
                   <span class="text-gray-600">Épicé</span>
                 </div>
                 <div class="flex items-center">
-                  <i class="fas fa-utensils text-benin-yellow mr-2"></i>
+                  <i class="mr-2 fas fa-utensils text-benin-yellow"></i>
                   <span class="text-gray-600">Plat principal</span>
                 </div>
               </div>
               
-              <p class="text-gray-700 mb-6 dish-description" ref="dishDescription">
+              <p class="mb-6 text-gray-700 dish-description" ref="dishDescription">
                 L'Amiwo est une pâte de maïs fermentée à la tomate, servie traditionnellement avec du poulet frit aux épices locales. Ce plat coloré et savoureux est un incontournable de la cuisine béninoise, particulièrement apprécié lors des célébrations.
               </p>
               
               <div class="mb-8">
-                <h4 class="font-bold text-gray-900 mb-3">Ingrédients principaux</h4>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div class="ingredient-item flex items-start" v-for="(ingredient, index) in amiwoIngredients" :key="`ingredient-${index}`" :data-delay="index * 0.1">
+                <h4 class="mb-3 font-bold text-gray-900">Ingrédients principaux</h4>
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <div class="flex items-start ingredient-item" v-for="(ingredient, index) in amiwoIngredients" :key="`ingredient-${index}`" :data-delay="index * 0.1">
                     <div class="w-6 h-6 rounded-full bg-benin-yellow/10 flex items-center justify-center mt-0.5 mr-3">
                       <i :class="`fas ${ingredient.icon} text-benin-yellow text-xs`"></i>
                     </div>
@@ -110,10 +112,10 @@
                 </div>
               </div>
               
-              <a href="#" class="gastro-cta inline-flex items-center text-benin-yellow font-medium relative overflow-hidden group">
-                <span class="relative z-10 pr-8 group-hover:text-benin-culture transition-colors duration-300">Découvrir la recette</span>
+              <a href="#" class="relative inline-flex items-center overflow-hidden font-medium gastro-cta text-benin-yellow group">
+                <span class="relative z-10 pr-8 transition-colors duration-300 group-hover:text-benin-culture">Découvrir la recette</span>
                 <svg xmlns="http://www.w3.org/2000/svg" 
-                     class="h-5 w-5 absolute right-0 top-1/2 transform -translate-y-1/2 group-hover:translate-x-1 transition-transform duration-300" 
+                     class="absolute right-0 w-5 h-5 transition-transform duration-300 transform -translate-y-1/2 top-1/2 group-hover:translate-x-1" 
                      fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
@@ -126,45 +128,48 @@
       
       <!-- Specialties Grid avec animation au défilement -->
       <div class="mb-20">
-        <h3 class="text-2xl md:text-3xl font-display font-bold text-center mb-12 transition-opacity duration-700" ref="gridTitle">
+        <h3 class="mb-12 text-2xl font-bold text-center transition-opacity duration-700 md:text-3xl font-display" ref="gridTitle">
           Spécialités culinaires
         </h3>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" ref="dishesGrid">
+        <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3" ref="dishesGrid">
           <!-- Dish cards avec effets améliorés -->
           <div v-for="(dish, index) in dishes" 
                :key="`dish-${index}`" 
-               class="dish-card bg-white rounded-xl overflow-hidden shadow-lg group transform transition-all duration-300 opacity-0"
-               :style="`transition-delay: ${index * 100}ms`"
+               class="overflow-hidden transition-all duration-300 transform bg-white shadow-lg dish-card rounded-xl group"
+               :style="{
+                 'transition-delay': `${index * 100}ms`,
+                 'opacity': 0
+               }"
                :data-index="index">
             <div class="relative h-56 overflow-hidden">
-              <div class="dish-image-container h-full w-full overflow-hidden">
+              <div class="w-full h-full overflow-hidden dish-image-container">
                 <img :src="dish.image" :alt="dish.title" 
-                     class="w-full h-full object-cover transition-all duration-700 hover:scale-105">
+                     class="object-cover w-full h-full transition-all duration-700 hover:scale-105">
               </div>
               <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
               
               <!-- Éléments visuels au survol -->
-              <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 dish-overlay">
+              <div class="absolute inset-0 transition-opacity duration-500 opacity-0 group-hover:opacity-100 dish-overlay">
                 <div class="absolute w-full h-full bg-benin-yellow/10 mix-blend-overlay"></div>
-                <div class="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 border border-white/20 rounded-full opacity-50"></div>
+                <div class="absolute w-20 h-20 transform -translate-x-1/2 -translate-y-1/2 border rounded-full opacity-50 top-1/3 left-1/2 border-white/20"></div>
               </div>
               
               <div class="absolute top-4 right-4">
-                <div class="bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-medium text-benin-yellow">
+                <div class="px-3 py-1 text-xs font-medium rounded-full bg-white/90 backdrop-blur-sm text-benin-yellow">
                   {{ dish.type }}
                 </div>
               </div>
-              <div class="absolute bottom-4 left-4 text-white">
-                <h3 class="font-display font-bold text-xl">{{ dish.title }}</h3>
-                <p class="text-white/80 text-sm">{{ dish.subtitle }}</p>
+              <div class="absolute text-white bottom-4 left-4">
+                <h3 class="text-xl font-bold font-display">{{ dish.title }}</h3>
+                <p class="text-sm text-white/80">{{ dish.subtitle }}</p>
               </div>
             </div>
             <div class="p-6">
-              <p class="text-gray-700 mb-4 dish-description">
+              <p class="mb-4 text-gray-700 dish-description">
                 {{ dish.description }}
               </p>
-              <div class="flex justify-between items-center">
+              <div class="flex items-center justify-between">
                 <!-- Niveau d'épice interactif -->
                 <div class="flex spice-level" 
                      @mouseenter="showSpiceTooltip = index" 
@@ -175,15 +180,15 @@
                   <!-- Tooltip -->
                   <div 
                     v-if="showSpiceTooltip === index" 
-                    class="absolute -top-10 left-0 bg-black/80 text-white text-xs px-3 py-1 rounded whitespace-nowrap z-10"
+                    class="absolute left-0 z-10 px-3 py-1 text-xs text-white rounded -top-10 bg-black/80 whitespace-nowrap"
                   >
                     Niveau d'épice: {{ getSpiceLevelText(dish.spiceLevel) }}
                   </div>
                 </div>
                 
-                <a href="#" class="inline-flex items-center text-benin-yellow font-medium group">
-                  <span class="group-hover:text-benin-culture transition-colors duration-300">Voir plus</span>
-                  <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+                <a href="#" class="inline-flex items-center font-medium text-benin-yellow group">
+                  <span class="transition-colors duration-300 group-hover:text-benin-culture">Voir plus</span>
+                  <i class="ml-2 transition-transform duration-300 fas fa-arrow-right group-hover:translate-x-1"></i>
                 </a>
               </div>
             </div>
@@ -192,15 +197,17 @@
       </div>
       
       <!-- Drinks Section avec effet de verre -->
-      <div class="mb-20 opacity-0 transition-all duration-700" ref="drinksSection">
-        <h3 class="text-2xl md:text-3xl font-display font-bold text-center mb-12">
+      <div class="mb-20 transition-all duration-700" 
+           ref="drinksSection"
+           :style="{ opacity: 0 }">
+        <h3 class="mb-12 text-2xl font-bold text-center md:text-3xl font-display">
           Boissons traditionnelles
         </h3>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
           <!-- Drink cards avec effet de verre -->
           <div v-for="(drink, index) in drinks" :key="`drink-${index}`"
-               class="bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden shadow-lg p-6 drink-card relative transform hover:-translate-y-2 transition-all duration-300"
+               class="relative p-6 overflow-hidden transition-all duration-300 transform shadow-lg bg-white/80 backdrop-blur-sm rounded-xl drink-card hover:-translate-y-2"
                :data-delay="index * 0.2">
             <!-- Effet de liquide -->
             <div class="absolute inset-x-0 bottom-0 bg-gradient-to-b" 
@@ -214,27 +221,29 @@
               </defs>
             </svg>
             
-            <div class="flex items-center mb-4 relative z-10">
+            <div class="relative z-10 flex items-center mb-4">
               <div :class="`w-16 h-16 rounded-full bg-${drink.color}/10 flex items-center justify-center mr-4`">
                 <i :class="`fas ${drink.icon} text-${drink.mainColor} text-2xl`"></i>
               </div>
               <div>
-                <h4 class="font-display font-bold text-xl">{{ drink.name }}</h4>
+                <h4 class="text-xl font-bold font-display">{{ drink.name }}</h4>
                 <p class="text-gray-600">{{ drink.type }}</p>
               </div>
             </div>
-            <p class="text-gray-700 relative z-10">
+            <p class="relative z-10 text-gray-700">
               {{ drink.description }}
             </p>
             
             <!-- Bulles animées pour les boissons -->
-            <div class="absolute inset-0 overflow-hidden pointer-events-none bubbles-container opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div class="absolute inset-0 overflow-hidden transition-opacity duration-500 opacity-0 pointer-events-none bubbles-container group-hover:opacity-100"></div>
           </div>
         </div>
       </div>
       
       <!-- Cooking Class Banner avec effets améliorés -->
-      <div class="rounded-2xl overflow-hidden relative cooking-cta opacity-0 transition-opacity duration-700" ref="cookingBanner">
+      <div class="relative overflow-hidden transition-opacity duration-700 rounded-2xl cooking-cta"
+           ref="cookingBanner"
+           :style="{ opacity: 0 }">
         <div class="absolute inset-0">
           <img src="/img/cooking-class-banner.webp" alt="Cours de cuisine béninoise" 
                class="w-full h-full object-cover scale-110 transition-all duration-[30s]"
@@ -256,8 +265,8 @@
           </div>
         </div>
         
-        <div class="relative p-8 md:p-12 text-center">
-          <h3 class="font-display font-bold text-2xl md:text-3xl mb-4 text-white ">
+        <div class="relative p-8 text-center md:p-12">
+          <h3 class="mb-4 text-2xl font-bold text-white font-display md:text-3xl ">
             Apprenez à cuisiner béninois
           </h3>
           <p class="max-w-2xl mx-auto mb-8 text-white/90 " style="transition-delay: 100ms">
@@ -265,7 +274,7 @@
           </p>
           <a href="#experiences" 
              @click.prevent="$emit('navigate-to', 'experiences')" 
-             class="inline-block px-6 py-3 bg-white text-benin-yellow font-bold rounded-lg hover:bg-benin-green hover:text-white transition-colors duration-300 transform hover:-translate-y-1 hover:shadow-xl relative overflow-hidden group cooking-element"
+             class="relative inline-block px-6 py-3 overflow-hidden font-bold transition-colors duration-300 transform bg-white rounded-lg text-benin-yellow hover:bg-benin-green hover:text-white hover:-translate-y-1 hover:shadow-xl group cooking-element"
              style="transition-delay: 200ms">
             <span class="relative z-10">Réserver un cours</span>
             <span class="absolute inset-0 bg-gradient-to-r from-benin-green via-white to-benin-yellow bg-[length:200%_100%] opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-shimmer"></span>
@@ -275,44 +284,44 @@
       
       <!-- Bouton flottant pour déguster virtuellement -->
       <div 
-  class="fixed hidden bottom-10 right-10 w-16 h-16 rounded-full bg-benin-yellow shadow-lg flex items-center justify-center cursor-pointer z-20 transition-all duration-500"
+  class="fixed z-20 items-center justify-center hidden w-16 h-16 transition-all duration-500 rounded-full shadow-lg cursor-pointer bottom-10 right-10 bg-benin-yellow"
   :class="{ 'opacity-100 translate-y-0': isSectionVisible, 'opacity-0 translate-y-10': !isSectionVisible }"
   ref="tasteButton"
   @click="playTasteAnimation"
   @mouseenter="hoverTaste = true" 
   @mouseleave="hoverTaste = false"
 >
-        <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center">
-          <i class="fas fa-utensils text-benin-yellow text-lg"></i>
+        <div class="flex items-center justify-center w-12 h-12 bg-white rounded-full">
+          <i class="text-lg fas fa-utensils text-benin-yellow"></i>
         </div>
         <div :class="`absolute inset-0 rounded-full border-2 border-benin-green animate-ping ${hoverTaste ? 'opacity-100' : 'opacity-0'}`"></div>
-        <span class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-1 rounded whitespace-nowrap opacity-0 transition-opacity duration-300" :class="{'opacity-100': hoverTaste}">Déguster virtuellement</span>
+        <span class="absolute px-3 py-1 text-xs text-white transition-opacity duration-300 transform -translate-x-1/2 rounded opacity-0 -top-10 left-1/2 bg-black/80 whitespace-nowrap" :class="{'opacity-100': hoverTaste}">Déguster virtuellement</span>
       </div>
       
       <!-- Modal de dégustation virtuelle -->
       <div 
         v-if="showTasteModal" 
-        class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
         @click.self="showTasteModal = false">
         <div 
-          class="bg-white rounded-xl p-6 max-w-lg w-full shadow-2xl transform transition-all duration-300"
+          class="w-full max-w-lg p-6 transition-all duration-300 transform bg-white shadow-2xl rounded-xl"
           :class="{'scale-100 opacity-100': showTasteModal, 'scale-90 opacity-0': !showTasteModal}">
-          <div class="flex justify-between items-start mb-4">
-            <h3 class="text-xl font-display font-bold text-benin-yellow">Dégustation virtuelle</h3>
+          <div class="flex items-start justify-between mb-4">
+            <h3 class="text-xl font-bold font-display text-benin-yellow">Dégustation virtuelle</h3>
             <button @click="showTasteModal = false" class="text-gray-500 hover:text-gray-700">
               <i class="fas fa-times"></i>
             </button>
           </div>
           
-          <div class="text-center mb-6">
-            <div class="mx-auto w-32 h-32 rounded-full bg-benin-yellow/10 flex items-center justify-center mb-4">
-              <i class="fas fa-utensils text-benin-yellow text-4xl"></i>
+          <div class="mb-6 text-center">
+            <div class="flex items-center justify-center w-32 h-32 mx-auto mb-4 rounded-full bg-benin-yellow/10">
+              <i class="text-4xl fas fa-utensils text-benin-yellow"></i>
             </div>
             <p class="text-gray-700">Imaginez les saveurs épicées, les arômes riches et les textures variées de la cuisine béninoise...</p>
           </div>
           
           <div class="flex justify-center">
-            <button @click="showTasteModal = false" class="px-5 py-2 bg-benin-yellow text-white font-medium rounded-lg hover:bg-benin-yellow/90 transition-colors">
+            <button @click="showTasteModal = false" class="px-5 py-2 font-medium text-white transition-colors rounded-lg bg-benin-yellow hover:bg-benin-yellow/90">
               Continuer l'exploration
             </button>
           </div>
@@ -463,21 +472,7 @@ export default {
   },
   
   mounted() {
-    if (this.$refs.gastroSection) {
-      this.observer = new IntersectionObserver(
-        (entries) => {
-          // Important: vérifiez explicitement isIntersecting pour chaque entrée
-          // Cela garantit la mise à jour correcte lorsque la section entre ET sort de la vue
-          this.isSectionVisible = entries[0].isIntersecting;
-          console.log("Section visibility changed:", this.isSectionVisible);
-        },
-        { 
-          threshold: 0.2, // 20% visibility to trigger
-          rootMargin: "0px" // Assurez-vous qu'il n'y a pas de marge supplémentaire
-        }
-      );
-      this.observer.observe(this.$refs.gastroSection);
-    }
+    
     // Initialiser les animations GSAP après le montage
     this.$nextTick(() => {
       this.initParallaxEffects();
@@ -512,9 +507,7 @@ export default {
   
   beforeUnmount() {
     // Nettoyer l'observer
-    if (this.observer) {
-      this.observer.disconnect();
-    }
+   
     // Nettoyer les ScrollTriggers pour éviter les fuites de mémoire
     ScrollTrigger.getAll().forEach(trigger => trigger.kill());
   },

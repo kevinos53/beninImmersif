@@ -123,6 +123,31 @@
           <!-- Timeline line -->
           <div class="absolute left-8 md:left-1/2 top-0 bottom-0 w-1 bg-vodou/30 transform md:translate-x-[-0.5px]"></div>
           
+          <!-- Véhicule animé qui se déplace le long de la timeline -->
+          <div class="absolute left-8 md:left-1/2 transform md:translate-x-[-50%] z-20 vehicle-container" ref="vehicleContainer">
+            <div class="vehicle-element" ref="vehicle">
+              <!-- Bus africain stylisé -->
+              <svg width="40" height="40" viewBox="0 0 50 50" class="drop-shadow-lg">
+                <rect x="10" y="18" width="30" height="14" rx="2" fill="#FCD116" />
+                <rect x="5" y="22" width="40" height="10" rx="1" fill="#008751" />
+                <rect x="7" y="19" width="3" height="5" rx="1" fill="#5D3587" />
+                <rect x="40" y="19" width="3" height="5" rx="1" fill="#5D3587" />
+                <rect x="12" y="14" width="26" height="8" rx="2" fill="#008751" />
+                <circle cx="12" cy="32" r="3" fill="#333" />
+                <circle cx="38" cy="32" r="3" fill="#333" />
+                <rect x="14" y="16" width="4" height="4" rx="1" fill="#87CEEB" opacity="0.7" />
+                <rect x="22" y="16" width="4" height="4" rx="1" fill="#87CEEB" opacity="0.7" />
+                <rect x="30" y="16" width="4" height="4" rx="1" fill="#87CEEB" opacity="0.7" />
+                <path d="M25,12 Q28,8 31,12 H19 Q22,8 25,12" fill="#E8112D" />
+              </svg>
+              
+              <!-- Poussière/effet de mouvement -->
+              <div class="absolute -bottom-1 -left-6 dust-particle"></div>
+              <div class="absolute -bottom-1 -left-4 dust-particle"></div>
+              <div class="absolute -bottom-1 -left-2 dust-particle"></div>
+            </div>
+          </div>
+          
           <div class="space-y-12 timeline-container">
             <!-- Item 1 -->
             <div class="relative pl-16 timeline-item md:pl-0 md:flex md:justify-between animate-on-enter">
@@ -380,6 +405,27 @@ export default {
   mounted() {
     this.initAnimations();
     this.init3DCards();
+    this.initVehicleAnimation();
+  },
+  beforeUnmount() {
+    // Nettoyer les événements pour éviter les fuites de mémoire
+    window.removeEventListener('resize', this.adjustVehiclePositionOnResize);
+    
+    // Nettoyer les animations GSAP
+    if (window.gsap && window.ScrollTrigger) {
+      // Tuer toutes les animations liées au véhicule
+      gsap.killTweensOf(this.$refs.vehicle);
+      gsap.killTweensOf(this.$refs.vehicleContainer);
+      
+      // Tuer les ScrollTriggers
+      ScrollTrigger.getAll().forEach(trigger => {
+        if (trigger.vars.trigger && 
+            (trigger.vars.trigger === document.querySelector('.timeline-container') ||
+             trigger.vars.trigger.closest('.culture-section'))) {
+          trigger.kill();
+        }
+      });
+    }
   },
   methods: {
     initAnimations() {
@@ -437,6 +483,311 @@ export default {
           });
         });
       }
+    },
+    
+    initVehicleAnimation() {
+      if (window.gsap && window.ScrollTrigger) {
+        // Obtenir les positions des marqueurs de la timeline
+        const timelineContainer = document.querySelector('.timeline-container');
+        const timelineMarkers = document.querySelectorAll('.timeline-marker');
+        const vehicle = this.$refs.vehicle;
+        const vehicleContainer = this.$refs.vehicleContainer;
+        
+        if (!timelineContainer || !timelineMarkers.length || !vehicle || !vehicleContainer) return;
+        
+        // Initialiser la position du véhicule au début de la timeline
+        gsap.set(vehicleContainer, { top: timelineMarkers[0].offsetTop });
+        
+        // Animation d'oscillation continue du véhicule (effet de conduite)
+        const oscillationAnimation = gsap.timeline({ repeat: -1 });
+        oscillationAnimation.to(vehicle, {
+          y: -2,
+          rotation: 1,
+          duration: 0.3,
+          ease: "sine.inOut"
+        }).to(vehicle, {
+          y: 0,
+          rotation: -1,
+          duration: 0.3,
+          ease: "sine.inOut"
+        }).to(vehicle, {
+          y: 1,
+          rotation: 0,
+          duration: 0.3,
+          ease: "sine.inOut"
+        });
+        
+        // Détecter le mode mobile pour adapter l'animation
+        const isMobile = window.innerWidth < 768;
+        
+        // Animation des images de la timeline
+        this.animateTimelineImages();
+        
+        // Création d'un tableau des positions des marqueurs
+        let markerPositions = [];
+        timelineMarkers.forEach(marker => {
+          markerPositions.push(marker.offsetTop);
+        });
+        
+        // Animation principale contrôlée par le scroll
+        const scrollTrigger = ScrollTrigger.create({
+          trigger: timelineContainer,
+          start: 'top 70%',
+          end: 'bottom 30%',
+          scrub: 1,
+          onUpdate: (self) => {
+            // Calcul du progrès pour déterminer l'étape actuelle
+            const progress = self.progress;
+            const stageCount = timelineMarkers.length;
+            const currentStage = Math.min(Math.floor(progress * stageCount), stageCount - 1);
+            
+            // Mise à jour visuelle de l'étape active
+            this.updateActiveStage(currentStage, timelineMarkers);
+            
+            // Animation du véhicule en fonction du scroll
+            const totalProgress = self.progress;
+            const currentPosition = gsap.utils.interpolate(
+              markerPositions[0],
+              markerPositions[markerPositions.length - 1],
+              totalProgress
+            );
+            
+            // Déplacement du véhicule en temps réel
+            gsap.set(vehicleContainer, { top: currentPosition });
+            
+            // Ajustement de la vitesse d'oscillation en fonction de la vitesse de défilement
+            const scrollSpeed = Math.abs(self.getVelocity() / 1000);
+            const speedFactor = Math.min(Math.max(scrollSpeed, 0.5), 2);
+            oscillationAnimation.timeScale(speedFactor);
+            
+            // Animation des marqueurs lors du passage
+            this.animateMarkersOnPass(currentPosition, timelineMarkers, vehicle);
+          }
+        });
+        
+        // Ajouter des observateurs pour redimensionnement
+        window.addEventListener('resize', () => {
+          // Recalculer les positions des marqueurs
+          markerPositions = [];
+          timelineMarkers.forEach(marker => {
+            markerPositions.push(marker.offsetTop);
+          });
+          
+          // Réinitialiser le ScrollTrigger
+          scrollTrigger.refresh();
+          
+          // Recalculer la position du véhicule
+          const currentProgress = scrollTrigger.progress;
+          if (currentProgress > 0) {
+            const currentPosition = gsap.utils.interpolate(
+              markerPositions[0],
+              markerPositions[markerPositions.length - 1],
+              currentProgress
+            );
+            gsap.set(vehicleContainer, { top: currentPosition });
+          }
+        });
+      }
+    },
+    
+    // Animation des marqueurs lors du passage du véhicule
+    animateMarkersOnPass(currentPosition, markers, vehicle) {
+      markers.forEach((marker, index) => {
+        const markerTop = marker.offsetTop;
+        const distance = Math.abs(currentPosition - markerTop);
+        
+        // Si le véhicule est proche d'un marqueur
+        if (distance < 15) {
+          // Animation de rebond au passage près d'un marqueur
+          if (!marker.dataset.animated) {
+            marker.dataset.animated = "true";
+            
+            // Ajouter la classe de surbrillance
+            marker.classList.add('highlighted');
+            
+            // Animation du marqueur
+            gsap.to(marker, {
+              scale: 1.3,
+              duration: 0.3,
+              ease: "back.out",
+              onComplete: () => {
+                gsap.to(marker, {
+                  scale: 1,
+                  duration: 0.2,
+                  ease: "power2.out",
+                  onComplete: () => {
+                    // Réinitialiser pour permettre une autre animation au prochain passage
+                    setTimeout(() => {
+                      delete marker.dataset.animated;
+                      marker.classList.remove('highlighted');
+                    }, 1000);
+                  }
+                });
+              }
+            });
+            
+            // Animation du véhicule au passage du marqueur
+            gsap.to(vehicle, {
+              y: -5,
+              duration: 0.2,
+              ease: "power1.out",
+              onComplete: () => {
+                gsap.to(vehicle, {
+                  y: 0,
+                  duration: 0.3,
+                  ease: "bounce.out"
+                });
+              }
+            });
+            
+            // Animer l'image correspondante si elle existe
+            const timelineItem = marker.closest('.timeline-item');
+            if (timelineItem) {
+              const imageContainer = timelineItem.querySelector('.hover-reveal');
+              if (imageContainer && !imageContainer.classList.contains('revealed')) {
+                imageContainer.classList.add('revealed');
+                
+                const image = imageContainer.querySelector('img');
+                if (image) {
+                  // Animation spéciale de l'image lors du passage du bus
+                  gsap.fromTo(image, 
+                    { opacity: 0, x: 50, scale: 0.9, filter: 'blur(10px)' },
+                    { 
+                      opacity: 1, 
+                      x: 0, 
+                      scale: 1, 
+                      filter: 'blur(0px)',
+                      duration: 0.8,
+                      ease: "power2.out"
+                    }
+                  );
+                }
+              }
+            }
+          }
+        } else if (distance > 50) {
+          // Retirer la surbrillance si le véhicule s'éloigne
+          marker.classList.remove('highlighted');
+        }
+      });
+    },
+    
+    // Animation des images de la timeline avec effet de glissement et fondu
+    animateTimelineImages() {
+      const timelineImages = document.querySelectorAll('.timeline-container .hover-reveal');
+      const timelineItems = document.querySelectorAll('.timeline-item');
+      
+      if (!timelineImages.length) return;
+      
+      // Préparer les images pour l'animation
+      timelineImages.forEach(container => {
+        const img = container.querySelector('img');
+        if (!img) return;
+        
+        gsap.set(img, {
+          opacity: 0,
+          x: 50,
+          scale: 0.9
+        });
+      });
+      
+      // Créer une animation pour chaque image
+      timelineItems.forEach((item, index) => {
+        const imageContainer = item.querySelector('.hover-reveal');
+        if (!imageContainer) return;
+        
+        const image = imageContainer.querySelector('img');
+        if (!image) return;
+        
+        ScrollTrigger.create({
+          trigger: item,
+          start: 'top 70%',
+          end: 'bottom 20%',
+          onEnter: () => {
+            // Ajouter la classe pour l'effet de dévoilement
+            imageContainer.classList.add('revealed');
+            
+            // Animation d'entrée avec glissement et fondu
+            gsap.to(image, {
+              opacity: 1,
+              x: 0,
+              scale: 1,
+              duration: 0.8,
+              delay: 0.2,
+              ease: "power2.out",
+              onComplete: () => {
+                // Effet de brillance après l'apparition
+                gsap.fromTo(imageContainer, 
+                  { boxShadow: '0 0 20px 0 rgba(139, 92, 246, 0.3)' },
+                  { 
+                    boxShadow: '0 0 5px 0 rgba(139, 92, 246, 0.1)',
+                    duration: 1.5,
+                    ease: "power2.out"
+                  }
+                );
+              }
+            });
+          },
+          onLeaveBack: () => {
+            // Animation de sortie lors du défilement vers le haut
+            imageContainer.classList.remove('revealed');
+            gsap.to(image, {
+              opacity: 0,
+              x: 50,
+              scale: 0.9,
+              duration: 0.5,
+              ease: "power1.in"
+            });
+          }
+        });
+      });
+    },
+    
+    // Ajuster la position du véhicule lors du redimensionnement
+    adjustVehiclePositionOnResize(vehicleContainer, markers) {
+      if (!vehicleContainer || !markers.length) return;
+      
+      // Trouver le marqueur actif le plus proche
+      const containerTop = vehicleContainer.offsetTop;
+      let closestMarker = markers[0];
+      let minDistance = Math.abs(markers[0].offsetTop - containerTop);
+      
+      markers.forEach(marker => {
+        const distance = Math.abs(marker.offsetTop - containerTop);
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestMarker = marker;
+        }
+      });
+      
+      // Réajuster la position du véhicule
+      gsap.to(vehicleContainer, {
+        top: closestMarker.offsetTop,
+        duration: 0.5,
+        ease: "power2.out"
+      });
+    },
+    
+    updateActiveStage(activeIndex, markers) {
+      markers.forEach((marker, index) => {
+        const timelineItem = marker.closest('.timeline-item');
+        if (!timelineItem) return;
+        
+        // Ajouter/supprimer des classes pour styliser l'étape active
+        if (index === activeIndex) {
+          timelineItem.classList.add('active-stage');
+          marker.style.boxShadow = '0 0 0 4px rgba(252, 209, 22, 0.5)';
+        } else if (index < activeIndex) {
+          // Étapes déjà visitées
+          timelineItem.classList.add('visited-stage');
+          timelineItem.classList.remove('active-stage');
+          marker.style.boxShadow = '0 0 0 4px rgba(0, 135, 81, 0.3)';
+        } else {
+          // Étapes à venir
+          timelineItem.classList.remove('active-stage', 'visited-stage');
+          marker.style.boxShadow = '0 0 0 4px rgba(0, 135, 81, 0.3)';
+        }
+      });
     },
     
     init3DCards() {
@@ -610,6 +961,89 @@ export default {
   --ocean: #0369A1;
 }
 
+/* Animation du véhicule */
+.vehicle-container {
+  position: absolute;
+  transition: all 0.5s ease;
+}
+
+.vehicle-element {
+  transform: translateX(-50%);
+  position: relative;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.2));
+}
+
+.vehicle-element svg {
+  transform-origin: center bottom;
+}
+
+/* Particules de poussière */
+.dust-particle {
+  width: 4px;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  position: absolute;
+  opacity: 0;
+}
+
+.dust-particle:nth-child(1) {
+  animation: dust-animation 1.5s infinite ease-out;
+  animation-delay: 0.2s;
+}
+
+.dust-particle:nth-child(2) {
+  animation: dust-animation 1.5s infinite ease-out;
+  animation-delay: 0.5s;
+}
+
+.dust-particle:nth-child(3) {
+  animation: dust-animation 1.5s infinite ease-out;
+  animation-delay: 0.8s;
+}
+
+@keyframes dust-animation {
+  0% {
+    transform: translate(0, 0) scale(0.5);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-10px, -5px) scale(0);
+    opacity: 0;
+  }
+}
+
+/* Effet de rebond du véhicule */
+@keyframes vehicle-bounce {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-3px);
+  }
+}
+
+.bounce-animation {
+  animation: vehicle-bounce 0.5s ease-in-out;
+}
+
+/* Effet d'arrivée à destination */
+@keyframes arrival-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.arrival-animation .timeline-marker {
+  animation: arrival-pulse 0.6s ease-in-out;
+}
+
 /* Améliorations pour les appareils mobiles */
 @media (max-width: 768px) {
   .card-3d {
@@ -620,5 +1054,139 @@ export default {
   .card-3d-content {
     transform: none !important;
   }
+}
+
+/* Styles pour les étapes actives et visitées */
+.active-stage .timeline-marker {
+  background-color: var(--benin-yellow);
+  transform: scale(1.2);
+  transition: all 0.3s ease;
+}
+
+.active-stage h3 {
+  color: var(--benin-yellow);
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+.visited-stage .timeline-marker {
+  background-color: var(--benin-green);
+}
+
+.visited-stage h3 {
+  color: var(--benin-green);
+}
+
+/* Pour accentuer l'effet d'immersion */
+.timeline-item {
+  transition: all 0.3s ease;
+}
+
+.active-stage {
+  transform: translateY(-5px);
+}
+
+/* Animation d'entrée pour le véhicule */
+@keyframes vehicle-entry {
+  0% {
+    opacity: 0;
+    transform: translateX(-80px) translateY(-20px) rotate(-15deg);
+  }
+  60% {
+    transform: translateX(10px) translateY(0) rotate(5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) rotate(0);
+  }
+}
+
+.vehicle-element {
+  animation: vehicle-entry 1.5s ease-out;
+}
+
+/* Améliorations pour les appareils mobiles */
+@media (max-width: 768px) {
+  .card-3d {
+    transform: none !important;
+    transition: transform 0.3s ease;
+  }
+  
+  .card-3d-content {
+    transform: none !important;
+  }
+}
+
+/* Animation de l'entrée des images */
+.hover-reveal {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s ease;
+}
+
+.hover-reveal::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, rgba(252, 209, 22, 0.3), rgba(139, 92, 246, 0.3));
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.hover-reveal::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  z-index: 3;
+  transition: left 0.5s ease-in-out;
+}
+
+.hover-reveal.revealed::after {
+  left: 100%;
+  transition: left 0.8s ease-in-out;
+}
+
+.hover-reveal:hover::before {
+  opacity: 0.5;
+}
+
+.hover-reveal img {
+  transition: transform 0.7s cubic-bezier(0.21, 0.61, 0.35, 1);
+  will-change: transform;
+}
+
+.hover-reveal.revealed img {
+  animation: image-reveal 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@keyframes image-reveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateX(50px);
+    filter: blur(10px);
+  }
+  60% {
+    opacity: 0.8;
+    filter: blur(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+    filter: blur(0);
+  }
+}
+
+/* Effet de brillance pour les marqueurs */
+.timeline-marker.highlighted {
+  box-shadow: 0 0 15px 5px rgba(252, 209, 22, 0.6) !important;
+  transition: box-shadow 0.5s ease;
 }
 </style> 
