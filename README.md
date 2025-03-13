@@ -1,13 +1,13 @@
 # Bénin Immersion 🌍
 
-![Bénin Immersion](public/img/benin-immersion-preview.png)
+
 
 ## 🌟 Présentation
 
 Bénin Immersion est une plateforme web immersive dédiée à la promotion du tourisme au Bénin. Ce site offre une expérience utilisateur captivante qui met en valeur les richesses culturelles, naturelles et gastronomiques du pays, avec un accent particulier sur la culture vodou et les traditions ancestrales béninoises.
 
-**🔗 [Voir le site en ligne](https://benin-immersion.vercel.app/)**  
-**🔗 [Dépôt GitHub](https://github.com/votre-username/benin-immersion)**
+**🔗 [Voir le site en ligne](https://benin-immersif.vercel.app/)**  
+**🔗 [Dépôt GitHub](https://github.com/kevinos53/beninImmersif)**
 
 ## ✨ Caractéristiques
 
@@ -57,7 +57,7 @@ Le design utilise une palette inspirée des couleurs nationales du Bénin (vert,
 
 1. Clonez le dépôt :
 ```bash
-git clone https://github.com/votre-username/benin-immersion.git
+git clone https://github.com/kevinos53/beninImmersif.git
 cd benin-immersion
 ```
 
@@ -120,11 +120,6 @@ Des effets de parallaxe sont utilisés pour créer une sensation de profondeur e
 
 Le site est entièrement responsive et offre une expérience optimale sur tous les appareils, des grands écrans de bureau aux smartphones.
 
-## 📸 Captures d'écran
-
-![Page d'accueil](public/img/screenshot-home.png)
-![Section Culture](public/img/screenshot-culture.png)
-![Section Gastronomie](public/img/screenshot-gastronomy.png)
 
 ## 🤝 Contribution
 
@@ -140,11 +135,7 @@ Les contributions sont les bienvenues ! N'hésitez pas à ouvrir une issue ou à
 
 Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus d'informations.
 
-## 👏 Remerciements
 
-- Merci à tous ceux qui ont contribué à ce projet
-- Inspiration : culture et traditions béninoises
-- Photos : Unsplash et collections personnelles
 
 ---
 
