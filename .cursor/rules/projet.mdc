@@ -1,0 +1,37 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Développe un site web immersif pour promouvoir le tourisme au Bénin. Le site présente les destinations touristiques, la culture vodou, les parcs nationaux, la gastronomie locale et les options d'hébergement à travers une expérience utilisateur captivante. J'ai besoin d'une interface moderne avec des animations fluides et des transitions entre sections qui évoquent l'aspect mystique du vodou béninois. Le design utilise une palette inspirée des couleurs nationales (vert, jaune, rouge) enrichie de teintes violettes représentant la spiritualité. Les fonctionnalités incluent une carte interactive, des parcours thématiques, une galerie dynamique et un système de réservation. L'objectif est de créer une expérience "wow" qui transporte virtuellement les visiteurs au Bénin avant même qu'ils ne réservent leur voyage.
+
+Recommandations d'utilisation :
+
+Couleurs principales :
+
+Utilisez benin-green comme couleur principale du site
+benin-yellow pour les accents et appels à l'action (boutons)
+benin-red uniquement pour les points d'attention (notifications, badges importants)
+
+
+Sections thématiques :
+
+Section Culture : vodou comme couleur dominante, benin-green en accent
+Section Nature : benin-green comme dominante, ocean en accent
+Section Cuisine : earth comme dominante, benin-yellow en accent
+Section Spirituelle : spirit comme dominante, vodou-light en accent
+
+
+Arrière-plans :
+
+Sections claires : blanc ou benin-green-50 à benin-green-100
+Sections sombres : night, night-light ou spirit-dark
+Séparations subtiles : clay-light à 10-20% d'opacité
+
+
+Dégradés recommandés :
+
+from-benin-green via-benin-green-600 to-benin-green-700 (dégradé vert)
+from-spirit via-vodou to-vodou-light (dégradé mystique)
+from-night via-spirit-dark to-vodou-dark (dégradé nuit)
+from-benin-yellow via-benin-yellow-400 to-earth-light (dégradé soleil)

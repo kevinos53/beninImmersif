@@ -1,11 +1,32 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
+import HeroSection from '../components/sections/HeroSection.vue';
+import CultureSection from '../components/sections/CultureSection.vue';
+import NatureSection from '../components/sections/NatureSection.vue';
+import ExperiencesSection from '../components/sections/ExperiencesSection.vue';
+import GastronomieSection from '../components/sections/GastronomieSection.vue';
+import ContactSection from '../components/sections/ContactSection.vue';
+import BackToTop from '../components/ui/BackToTop.vue';
+import ProgressBar from '../components/ui/ProgressBar.vue';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Bénin Immersion - Découvrez la magie du Bénin">
+	<main class="relative">
+		<HeroSection client:load />
+		<CultureSection client:visible />
+		<NatureSection client:visible />
+		<!-- <ExperiencesSection client:visible /> -->
+		<GastronomieSection client:visible />
+		<ContactSection client:visible />
+		<BackToTop client:load />
+		<ProgressBar client:load />
+	</main>
 </Layout>
+
+<style>
+	/* Styles spécifiques à la page d'accueil */
+	main {
+		overflow-x: hidden;
+	}
+</style>
