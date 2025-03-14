@@ -1,9 +1,9 @@
 <template>
-  <section id="contact" class="py-20 relative overflow-hidden bg-gradient-to-b from-white to-benin-green/5">
+  <section id="contact" class="relative py-20 overflow-hidden bg-gradient-to-b from-white to-benin-green/5">
     <!-- Éléments décoratifs -->
     <div class="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-white to-transparent"></div>
-    <div class="absolute -top-20 right-0 w-72 h-72 bg-benin-green/5 rounded-full blur-3xl"></div>
-    <div class="absolute bottom-20 left-10 w-80 h-80 bg-benin-culture/5 rounded-full blur-3xl"></div>
+    <div class="absolute right-0 rounded-full -top-20 w-72 h-72 bg-benin-green/5 blur-3xl"></div>
+    <div class="absolute rounded-full bottom-20 left-10 w-80 h-80 bg-benin-culture/5 blur-3xl"></div>
     
     <!-- Motifs flottants -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
@@ -24,45 +24,45 @@
       </div>
     </div>
     
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+    <div class="relative px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
       <!-- Section Header -->
-      <div class="text-center mb-16">
-        <div class="inline-block p-1 px-3 bg-benin-green/20 rounded-lg mb-4">
-          <span class="text-benin-green font-medium">Contactez-nous</span>
+      <div class="mb-16 text-center">
+        <div class="inline-block p-1 px-3 mb-4 rounded-lg bg-benin-green/20">
+          <span class="font-medium text-benin-green">Contactez-nous</span>
         </div>
-        <h2 class="section-title text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-gray-900 mb-6">
+        <h2 class="mb-6 text-3xl font-bold text-gray-900 section-title sm:text-4xl lg:text-5xl font-display">
           Planifiez votre <span class="text-benin-green">voyage au Bénin</span>
         </h2>
-        <p class="max-w-3xl mx-auto text-gray-700 text-lg">
+        <p class="max-w-3xl mx-auto text-lg text-gray-700">
           Vous avez des questions sur le Bénin ou besoin d'aide pour organiser votre séjour ? Notre équipe d'experts locaux est à votre disposition pour vous accompagner dans la préparation de votre voyage.
         </p>
       </div>
       
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
+      <div class="grid grid-cols-1 gap-12 mb-20 lg:grid-cols-2">
         <!-- Contact Form -->
-        <div class="bg-white rounded-2xl shadow-xl p-8 md:p-10">
-          <h3 class="text-2xl font-display font-bold text-gray-900 mb-6">Envoyez-nous un message</h3>
+        <div class="p-8 bg-white shadow-xl rounded-2xl md:p-10">
+          <h3 class="mb-6 text-2xl font-bold text-gray-900 font-display">Envoyez-nous un message</h3>
           
           <form @submit.prevent="submitForm" class="space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div>
-                <label for="firstname" class="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
+                <label for="firstname" class="block mb-1 text-sm font-medium text-gray-700">Prénom</label>
                 <input 
                   type="text" 
                   id="firstname" 
                   v-model="form.firstname" 
-                  class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-benin-green focus:border-benin-green transition-colors"
+                  class="w-full px-4 py-3 transition-colors border border-gray-300 rounded-lg focus:ring-2 focus:ring-benin-green focus:border-benin-green"
                   placeholder="Votre prénom"
                   required
                 >
               </div>
               <div>
-                <label for="lastname" class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+                <label for="lastname" class="block mb-1 text-sm font-medium text-gray-700">Nom</label>
                 <input 
                   type="text" 
                   id="lastname" 
                   v-model="form.lastname" 
-                  class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-benin-green focus:border-benin-green transition-colors"
+                  class="w-full px-4 py-3 transition-colors border border-gray-300 rounded-lg focus:ring-2 focus:ring-benin-green focus:border-benin-green"
                   placeholder="Votre nom"
                   required
                 >
@@ -70,23 +70,23 @@
             </div>
             
             <div>
-              <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <label for="email" class="block mb-1 text-sm font-medium text-gray-700">Email</label>
               <input 
                 type="email" 
                 id="email" 
                 v-model="form.email" 
-                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-benin-green focus:border-benin-green transition-colors"
+                class="w-full px-4 py-3 transition-colors border border-gray-300 rounded-lg focus:ring-2 focus:ring-benin-green focus:border-benin-green"
                 placeholder="votre.email@exemple.com"
                 required
               >
             </div>
             
             <div>
-              <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Sujet</label>
+              <label for="subject" class="block mb-1 text-sm font-medium text-gray-700">Sujet</label>
               <select 
                 id="subject" 
                 v-model="form.subject" 
-                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-benin-green focus:border-benin-green transition-colors"
+                class="w-full px-4 py-3 transition-colors border border-gray-300 rounded-lg focus:ring-2 focus:ring-benin-green focus:border-benin-green"
                 required
               >
                 <option value="" disabled selected>Sélectionnez un sujet</option>
@@ -99,12 +99,12 @@
             </div>
             
             <div>
-              <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+              <label for="message" class="block mb-1 text-sm font-medium text-gray-700">Message</label>
               <textarea 
                 id="message" 
                 v-model="form.message" 
                 rows="5" 
-                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-benin-green focus:border-benin-green transition-colors"
+                class="w-full px-4 py-3 transition-colors border border-gray-300 rounded-lg focus:ring-2 focus:ring-benin-green focus:border-benin-green"
                 placeholder="Décrivez votre demande en détail..."
                 required
               ></textarea>
@@ -116,7 +116,7 @@
                   id="privacy" 
                   type="checkbox" 
                   v-model="form.privacy" 
-                  class="w-4 h-4 text-benin-green border-gray-300 rounded focus:ring-benin-green"
+                  class="w-4 h-4 border-gray-300 rounded text-benin-green focus:ring-benin-green"
                   required
                 >
               </div>
@@ -130,11 +130,11 @@
             <div>
               <button 
                 type="submit" 
-                class="w-full px-6 py-3 bg-benin-green text-white font-bold rounded-lg hover:bg-benin-green-dark transition-colors duration-300 transform hover:-translate-y-1 hover:shadow-xl flex items-center justify-center"
+                class="flex items-center justify-center w-full px-6 py-3 font-bold text-white transition-colors duration-300 transform rounded-lg bg-benin-green hover:bg-benin-green-dark hover:-translate-y-1 hover:shadow-xl"
                 :disabled="isSubmitting"
               >
                 <span v-if="isSubmitting">
-                  <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <svg class="w-5 h-5 mr-3 -ml-1 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
@@ -154,16 +154,16 @@
         
         <!-- Contact Info -->
         <div>
-          <div class="bg-white rounded-2xl shadow-xl p-8 md:p-10 mb-8">
-            <h3 class="text-2xl font-display font-bold text-gray-900 mb-6">Nos coordonnées</h3>
+          <div class="p-8 mb-8 bg-white shadow-xl rounded-2xl md:p-10">
+            <h3 class="mb-6 text-2xl font-bold text-gray-900 font-display">Nos coordonnées</h3>
             
             <div class="space-y-6">
               <div class="flex items-start">
-                <div class="w-12 h-12 rounded-full bg-benin-green/10 flex items-center justify-center mr-4 mt-1">
-                  <i class="fas fa-map-marker-alt text-benin-green text-xl"></i>
+                <div class="flex items-center justify-center w-12 h-12 mt-1 mr-4 rounded-full bg-benin-green/10">
+                  <i class="text-xl fas fa-map-marker-alt text-benin-green"></i>
                 </div>
                 <div>
-                  <h4 class="font-bold text-gray-900 mb-1">Adresse</h4>
+                  <h4 class="mb-1 font-bold text-gray-900">Adresse</h4>
                   <p class="text-gray-700">
                     123 Avenue de la République<br>
                     Cotonou, Bénin
@@ -172,48 +172,48 @@
               </div>
               
               <div class="flex items-start">
-                <div class="w-12 h-12 rounded-full bg-benin-green/10 flex items-center justify-center mr-4 mt-1">
-                  <i class="fas fa-phone-alt text-benin-green text-xl"></i>
+                <div class="flex items-center justify-center w-12 h-12 mt-1 mr-4 rounded-full bg-benin-green/10">
+                  <i class="text-xl fas fa-phone-alt text-benin-green"></i>
                 </div>
                 <div>
-                  <h4 class="font-bold text-gray-900 mb-1">Téléphone</h4>
+                  <h4 class="mb-1 font-bold text-gray-900">Téléphone</h4>
                   <p class="text-gray-700">
-                    <a href="tel:+22921123456" class="hover:text-benin-green transition-colors">+229 21 12 34 56</a><br>
+                    <a href="tel:+22921123456" class="transition-colors hover:text-benin-green">+229 01 46 48 44 96</a><br>
                     <span class="text-sm text-gray-500">Lun-Ven: 8h-18h (GMT+1)</span>
                   </p>
                 </div>
               </div>
               
               <div class="flex items-start">
-                <div class="w-12 h-12 rounded-full bg-benin-green/10 flex items-center justify-center mr-4 mt-1">
-                  <i class="fas fa-envelope text-benin-green text-xl"></i>
+                <div class="flex items-center justify-center w-12 h-12 mt-1 mr-4 rounded-full bg-benin-green/10">
+                  <i class="text-xl fas fa-envelope text-benin-green"></i>
                 </div>
                 <div>
-                  <h4 class="font-bold text-gray-900 mb-1">Email</h4>
+                  <h4 class="mb-1 font-bold text-gray-900">Email</h4>
                   <p class="text-gray-700">
-                    <a href="mailto:contact@benin-immersion.com" class="hover:text-benin-green transition-colors">contact@benin-immersion.com</a><br>
+                    <a href="mailto:contact@benin-immersion.com" class="transition-colors hover:text-benin-green">contact@benin-immersion.com</a><br>
                     <span class="text-sm text-gray-500">Nous répondons sous 24h</span>
                   </p>
                 </div>
               </div>
               
               <div class="flex items-start">
-                <div class="w-12 h-12 rounded-full bg-benin-green/10 flex items-center justify-center mr-4 mt-1">
-                  <i class="fas fa-comments text-benin-green text-xl"></i>
+                <div class="flex items-center justify-center w-12 h-12 mt-1 mr-4 rounded-full bg-benin-green/10">
+                  <i class="text-xl fas fa-comments text-benin-green"></i>
                 </div>
                 <div>
-                  <h4 class="font-bold text-gray-900 mb-1">Réseaux sociaux</h4>
-                  <div class="flex space-x-4 mt-2">
-                    <a href="#" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-benin-green hover:text-white transition-colors">
+                  <h4 class="mb-1 font-bold text-gray-900">Réseaux sociaux</h4>
+                  <div class="flex mt-2 space-x-4">
+                    <a href="#" class="flex items-center justify-center w-10 h-10 transition-colors bg-gray-100 rounded-full hover:bg-benin-green hover:text-white">
                       <i class="fab fa-facebook-f"></i>
                     </a>
-                    <a href="#" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-benin-green hover:text-white transition-colors">
-                      <i class="fab fa-instagram"></i>
+                    <a href="https://www.linkedin.com/in/gnanha-mahougnon-kevin-b58777277/" class="flex items-center justify-center w-10 h-10 transition-colors bg-gray-100 rounded-full hover:bg-benin-green hover:text-white">
+                      <i class="fab fa-linkedin-in"></i>
                     </a>
-                    <a href="#" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-benin-green hover:text-white transition-colors">
+                    <a href="#" class="flex items-center justify-center w-10 h-10 transition-colors bg-gray-100 rounded-full hover:bg-benin-green hover:text-white">
                       <i class="fab fa-twitter"></i>
                     </a>
-                    <a href="#" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-benin-green hover:text-white transition-colors">
+                    <a href="#" class="flex items-center justify-center w-10 h-10 transition-colors bg-gray-100 rounded-full hover:bg-benin-green hover:text-white">
                       <i class="fab fa-youtube"></i>
                     </a>
                   </div>
@@ -223,16 +223,16 @@
           </div>
           
           <!-- Map -->
-          <div class="bg-white rounded-2xl shadow-xl overflow-hidden h-80">
-            <div class="h-full w-full relative">
-              <img src="/img/benin-map.webp" alt="Carte du Bénin" class="w-full h-full object-cover">
+          <div class="overflow-hidden bg-white shadow-xl rounded-2xl h-80">
+            <div class="relative w-full h-full">
+              <img src="/img/benin-map.webp" alt="Carte du Bénin" class="object-cover w-full h-full">
               <div class="absolute inset-0 flex items-center justify-center">
-                <div class="bg-white/90 backdrop-blur-sm p-4 rounded-lg text-center max-w-xs">
-                  <h4 class="font-bold text-gray-900 mb-2">Carte interactive</h4>
-                  <p class="text-gray-700 text-sm mb-3">Explorez notre carte interactive pour découvrir les merveilles du Bénin</p>
-                  <a href="#" class="inline-flex items-center text-benin-green font-medium hover:text-benin-culture transition-colors">
+                <div class="max-w-xs p-4 text-center rounded-lg bg-white/90 backdrop-blur-sm">
+                  <h4 class="mb-2 font-bold text-gray-900">Carte interactive</h4>
+                  <p class="mb-3 text-sm text-gray-700">Explorez notre carte interactive pour découvrir les merveilles du Bénin</p>
+                  <a href="#" class="inline-flex items-center font-medium transition-colors text-benin-green hover:text-benin-culture">
                     <span>Ouvrir la carte</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                     </svg>
                   </a>
@@ -245,46 +245,46 @@
       
       <!-- FAQ Section -->
       <div class="mb-20">
-        <h3 class="text-2xl md:text-3xl font-display font-bold text-center mb-12">Questions fréquentes</h3>
+        <h3 class="mb-12 text-2xl font-bold text-center md:text-3xl font-display">Questions fréquentes</h3>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="bg-white rounded-xl shadow-lg p-6">
-            <h4 class="font-bold text-xl text-gray-900 mb-3">Quand est la meilleure période pour visiter le Bénin ?</h4>
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div class="p-6 bg-white shadow-lg rounded-xl">
+            <h4 class="mb-3 text-xl font-bold text-gray-900">Quand est la meilleure période pour visiter le Bénin ?</h4>
             <p class="text-gray-700">
               La meilleure période pour visiter le Bénin s'étend de novembre à mars, pendant la saison sèche. Le climat est alors plus agréable avec des températures modérées et peu de précipitations, ce qui facilite les déplacements et les activités en plein air.
             </p>
           </div>
           
-          <div class="bg-white rounded-xl shadow-lg p-6">
-            <h4 class="font-bold text-xl text-gray-900 mb-3">Ai-je besoin d'un visa pour me rendre au Bénin ?</h4>
+          <div class="p-6 bg-white shadow-lg rounded-xl">
+            <h4 class="mb-3 text-xl font-bold text-gray-900">Ai-je besoin d'un visa pour me rendre au Bénin ?</h4>
             <p class="text-gray-700">
               Oui, la plupart des voyageurs ont besoin d'un visa pour entrer au Bénin. Depuis 2018, le Bénin propose un e-visa que vous pouvez obtenir en ligne avant votre départ. Nous pouvons vous accompagner dans les démarches administratives.
             </p>
           </div>
           
-          <div class="bg-white rounded-xl shadow-lg p-6">
-            <h4 class="font-bold text-xl text-gray-900 mb-3">Quelles vaccinations sont nécessaires ?</h4>
+          <div class="p-6 bg-white shadow-lg rounded-xl">
+            <h4 class="mb-3 text-xl font-bold text-gray-900">Quelles vaccinations sont nécessaires ?</h4>
             <p class="text-gray-700">
               La vaccination contre la fièvre jaune est obligatoire pour entrer au Bénin. Il est également recommandé d'être à jour dans ses vaccinations contre l'hépatite A et B, la typhoïde, et de prendre un traitement antipaludéen. Consultez votre médecin avant le départ.
             </p>
           </div>
           
-          <div class="bg-white rounded-xl shadow-lg p-6">
-            <h4 class="font-bold text-xl text-gray-900 mb-3">Comment se déplacer à l'intérieur du pays ?</h4>
+          <div class="p-6 bg-white shadow-lg rounded-xl">
+            <h4 class="mb-3 text-xl font-bold text-gray-900">Comment se déplacer à l'intérieur du pays ?</h4>
             <p class="text-gray-700">
               Plusieurs options s'offrent à vous : les taxis collectifs (zemidjan), les bus, ou la location de voiture avec chauffeur. Pour plus de confort et de sécurité, nous recommandons nos services de transport privé avec guide francophone inclus dans nos forfaits.
             </p>
           </div>
           
-          <div class="bg-white rounded-xl shadow-lg p-6">
-            <h4 class="font-bold text-xl text-gray-900 mb-3">Quelle monnaie est utilisée au Bénin ?</h4>
+          <div class="p-6 bg-white shadow-lg rounded-xl">
+            <h4 class="mb-3 text-xl font-bold text-gray-900">Quelle monnaie est utilisée au Bénin ?</h4>
             <p class="text-gray-700">
               Le Bénin utilise le Franc CFA (XOF). Les cartes de crédit sont acceptées dans les grands hôtels et restaurants des zones touristiques, mais il est conseillé d'avoir toujours du liquide sur soi, surtout lors de déplacements dans les zones rurales.
             </p>
           </div>
           
-          <div class="bg-white rounded-xl shadow-lg p-6">
-            <h4 class="font-bold text-xl text-gray-900 mb-3">Proposez-vous des circuits personnalisés ?</h4>
+          <div class="p-6 bg-white shadow-lg rounded-xl">
+            <h4 class="mb-3 text-xl font-bold text-gray-900">Proposez-vous des circuits personnalisés ?</h4>
             <p class="text-gray-700">
               Absolument ! Nous nous spécialisons dans la création d'itinéraires sur mesure adaptés à vos intérêts, votre budget et votre durée de séjour. Contactez-nous avec vos préférences et nous élaborerons ensemble le voyage qui vous correspond.
             </p>
@@ -295,7 +295,7 @@
       <!-- Newsletter -->
       <div class="rounded-2xl overflow-hidden relative shadow-2xl transform hover:scale-[1.01] transition-all duration-300">
         <div class="absolute inset-0">
-          <img src="/img/newsletter-bg.webp" alt="Newsletter" class="w-full h-full object-cover">
+          <img src="/img/newsletter-bg.webp" alt="Newsletter" class="object-cover w-full h-full">
           <div class="absolute inset-0 bg-gradient-to-br from-benin-green/90 to-spirit/80"></div>
           <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(93,53,135,0.5),transparent_70%)]"></div>
           
@@ -314,26 +314,26 @@
         
         <div class="relative p-8 md:p-12">
           <div class="max-w-3xl mx-auto text-center">
-            <span class="inline-block px-4 py-1 rounded-full bg-benin-yellow/20 text-benin-yellow-50 font-medium text-sm mb-4 backdrop-blur-sm">Newsletter</span>
+            <span class="inline-block px-4 py-1 mb-4 text-sm font-medium rounded-full bg-benin-yellow/20 text-benin-yellow-50 backdrop-blur-sm">Newsletter</span>
             
-            <h3 class="font-display font-bold text-2xl md:text-3xl mb-4 text-white drop-shadow-md">
+            <h3 class="mb-4 text-2xl font-bold text-white font-display md:text-3xl drop-shadow-md">
               Restez informé sur le <span class="text-benin-yellow">Bénin</span>
             </h3>
             
-            <p class="mb-8 text-white/90 text-lg">
+            <p class="mb-8 text-lg text-white/90">
               Inscrivez-vous à notre newsletter pour recevoir des conseils de voyage, des offres exclusives et les dernières actualités sur le Bénin.
             </p>
             
-            <form @submit.prevent="subscribeNewsletter" class="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
-              <div class="flex-grow relative">
+            <form @submit.prevent="subscribeNewsletter" class="flex flex-col max-w-xl gap-4 mx-auto sm:flex-row">
+              <div class="relative flex-grow">
                 <input 
                   type="email" 
                   v-model="newsletter.email" 
-                  class="w-full px-5 py-4 rounded-xl border-0 shadow-inner focus:ring-2 focus:ring-benin-yellow/50 pl-12 bg-white/95 backdrop-blur-sm"
+                  class="w-full px-5 py-4 pl-12 border-0 shadow-inner rounded-xl focus:ring-2 focus:ring-benin-yellow/50 bg-white/95 backdrop-blur-sm"
                   placeholder="Votre adresse email"
                   required
                 >
-                <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-benin-green">
+                <div class="absolute transform -translate-y-1/2 left-4 top-1/2 text-benin-green">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M20,8L12,13L4,8V6L12,11L20,6M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4Z" />
                   </svg>
@@ -342,14 +342,14 @@
               
               <button 
                 type="submit" 
-                class="px-8 py-4 bg-benin-yellow text-night font-bold rounded-xl hover:bg-white transition-all duration-300 whitespace-nowrap shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                class="px-8 py-4 font-bold transition-all duration-300 transform shadow-lg bg-benin-yellow text-night rounded-xl hover:bg-white whitespace-nowrap hover:shadow-xl hover:-translate-y-1"
               >
                 S'abonner
               </button>
             </form>
             
             <p class="mt-6 text-sm text-white/80">
-              En vous inscrivant, vous acceptez de recevoir nos emails et confirmez avoir lu notre <a href="#" class="text-benin-yellow hover:underline font-medium">politique de confidentialité</a>.
+              En vous inscrivant, vous acceptez de recevoir nos emails et confirmez avoir lu notre <a href="#" class="font-medium text-benin-yellow hover:underline">politique de confidentialité</a>.
             </p>
           </div>
         </div>

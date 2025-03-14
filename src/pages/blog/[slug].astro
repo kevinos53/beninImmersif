@@ -1,0 +1,452 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import RelatedArticles from '../../components/blog/RelatedArticles.vue';
+
+type BlogEntry = CollectionEntry<'blog'>;
+
+// Générer les routes statiques pour chaque article
+export async function getStaticPaths() {
+  const blogEntries = await getCollection('blog');
+  return blogEntries.map((entry: BlogEntry) => ({
+    params: { slug: entry.data.slug },
+    props: { entry }
+  }));
+}
+
+interface Props {
+  entry: BlogEntry;
+}
+
+const { entry } = Astro.props;
+
+const post = await getEntry('blog', entry.id);
+if (!post) {
+  // Traiter l'erreur, par exemple :
+  throw new Error('Impossible de trouver l\'article de blog');
+}
+const { Content } = await render(post);
+
+// Fonction pour formater la date
+const formatDate = (date: Date): string => {
+  return date.toLocaleDateString('fr-FR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+};
+
+// Obtenir le temps de lecture estimé
+const getReadingTime = (content: string): number => {
+  // Moyenne de 200 mots par minute
+  const wordsPerMinute = 200;
+  const numberOfWords = content.split(/\s/g).length;
+  return Math.ceil(numberOfWords / wordsPerMinute);
+};
+
+// Préparer les données de l'article pour les composants
+const articleData = {
+  slug: entry.data.slug,
+  title: entry.data.title,
+  description: entry.data.description,
+  content: entry.body,
+  publishDate: entry.data.pubDate,
+  category: entry.data.category,
+  author: entry.data.author,
+  image: entry.data.heroImage,
+  tags: entry.data.tags,
+  readingTime: entry.data.readingTime
+} as const;
+---
+
+<Layout title={`${articleData.title} - Blog Bénin Immersion`}>
+  <main class="relative bg-white">
+    <!-- Hero Header avec parallax -->
+    <div class="relative h-[70vh] overflow-hidden">
+      <div class="absolute inset-0 z-0">
+        <div class="absolute inset-0 z-10 bg-gradient-to-b from-black/60 via-black/40 to-black/70 mix-blend-multiply"></div>
+        <img 
+          src={articleData.image} 
+          alt={articleData.title}
+          class="object-cover w-full h-full scale-110"
+        >
+      </div>
+      
+      <div class="container relative z-20 flex flex-col items-center justify-end h-full px-4 pb-16 mx-auto text-white">
+        <!-- Fil d'Ariane -->
+        <nav class="self-start pt-8 mb-auto" aria-label="Breadcrumb">
+          <ol class="flex items-center space-x-2">
+            <li>
+              <a href="/" class="transition-colors text-white/80 hover:text-white">Accueil</a>
+            </li>
+            <li class="flex items-center space-x-2">
+              <span class="text-white/60">/</span>
+              <a href="/blog" class="transition-colors text-white/80 hover:text-white">Blog</a>
+            </li>
+            <li class="flex items-center space-x-2">
+              <span class="text-white/60">/</span>
+              <span class="text-white/90">{articleData.title}</span>
+            </li>
+          </ol>
+        </nav>
+        
+        <!-- Catégorie -->
+        <span class="px-4 py-1 mb-6 text-sm font-medium text-white transition-all duration-300 transform rounded-full bg-benin-green hover:scale-105">
+          {articleData.category}
+        </span>
+        
+        <!-- Titre de l'article -->
+        <h1 class="max-w-4xl mb-6 text-4xl font-bold text-center text-white md:text-5xl lg:text-6xl drop-shadow-md">
+          {articleData.title}
+        </h1>
+        
+        <!-- Info article -->
+        <div class="flex flex-wrap items-center justify-center gap-8 mb-0">
+          <!-- Auteur avec avatar -->
+          <div class="flex items-center">
+            <img 
+              src={articleData.author.avatar}
+              alt={articleData.author.name}
+              class="object-cover w-12 h-12 mr-3 border-2 border-white rounded-full shadow-lg"
+            >
+            <div>
+              <div class="font-medium">{articleData.author.name}</div>
+              <div class="text-sm text-white/70">Auteur</div>
+            </div>
+          </div>
+          
+          <!-- Date -->
+          <div class="flex items-center">
+            <span class="flex items-center">
+              <i class="mr-2 fas fa-calendar"></i>
+              {formatDate(articleData.publishDate)}
+            </span>
+          </div>
+          
+          <!-- Temps de lecture -->
+          <div class="flex items-center">
+            <span class="flex items-center">
+              <i class="mr-2 fas fa-clock"></i>
+              {articleData.readingTime} min de lecture
+            </span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Vague décorative -->
+      <div class="absolute bottom-0 left-0 right-0">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120" class="fill-white">
+          <path d="M0,64L80,69.3C160,75,320,85,480,90.7C640,96,800,96,960,80C1120,64,1280,32,1360,16L1440,0L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
+        </svg>
+      </div>
+    </div>
+    
+    <!-- Contenu principal -->
+    <article class="container px-4 py-12 mx-auto">
+      <div class="grid grid-cols-1 gap-12 lg:grid-cols-12">
+        <!-- Contenu de l'article -->
+        <div class="order-2 lg:col-span-8 lg:order-1">
+          <!-- Résumé/introduction -->
+          <div class="p-8 mb-10 border-l-4 rounded-r-xl bg-benin-green-50 border-benin-green">
+            <p class="italic text-gray-700">{articleData.description}</p>
+          </div>
+          
+          <!-- Corps de l'article -->
+          <div class="prose prose-lg max-w-none prose-headings:text-gray-800 prose-p:text-gray-600 prose-a:text-benin-green prose-a:no-underline hover:prose-a:text-benin-green-600 prose-img:rounded-xl prose-img:shadow-lg">
+            <Content />
+          </div>
+          
+          <!-- Tags -->
+          <div class="flex flex-wrap gap-2 mt-12">
+            <span class="text-gray-700">Tags:</span>
+            {articleData.tags.map((tag) => (
+              <a 
+                href={`/blog/tag/${tag.toLowerCase()}`}
+                class="px-3 py-1 text-sm transition-colors duration-300 rounded-full text-benin-green bg-benin-green-50 hover:bg-benin-green hover:text-white"
+              >
+                #{tag}
+              </a>
+            ))}
+          </div>
+          
+          <!-- Séparateur -->
+          <hr class="my-12 border-gray-200" />
+          
+          <!-- Section pour l'auteur -->
+          <div class="p-8 mt-10 rounded-2xl bg-gray-50">
+            <div class="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
+              <img 
+                src={articleData.author.avatar}
+                alt={articleData.author.name}
+                class="object-cover w-24 h-24 rounded-full"
+              >
+              <div>
+                <h3 class="mb-2 text-xl font-bold text-gray-900">À propos de {articleData.author.name}</h3>
+                <p class="mb-4 text-gray-600">{articleData.author.bio}</p>
+                <div class="flex space-x-4">
+                  <a href="#" class="transition-colors text-benin-green hover:text-benin-green-600">
+                    <i class="fab fa-twitter"></i>
+                  </a>
+                  <a href="#" class="transition-colors text-benin-green hover:text-benin-green-600">
+                    <i class="fab fa-linkedin"></i>
+                  </a>
+                  <a href="#" class="transition-colors text-benin-green hover:text-benin-green-600">
+                    <i class="fab fa-instagram"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Navigation entre articles (précédent/suivant) -->
+          <div class="grid grid-cols-1 gap-4 mt-12 sm:grid-cols-2">
+            <a href="#" class="p-6 transition-all duration-300 border border-gray-100 rounded-xl hover:border-benin-green hover:shadow-md group">
+              <div class="flex items-center text-gray-500 group-hover:text-benin-green">
+                <i class="mr-2 fas fa-arrow-left"></i>
+                <span>Article précédent</span>
+              </div>
+              <h4 class="mt-2 font-medium text-gray-900 group-hover:text-benin-green">Comment préparer votre voyage au Bénin</h4>
+            </a>
+            
+            <a href="#" class="p-6 text-right transition-all duration-300 border border-gray-100 rounded-xl hover:border-benin-green hover:shadow-md group">
+              <div class="flex items-center justify-end text-gray-500 group-hover:text-benin-green">
+                <span>Article suivant</span>
+                <i class="ml-2 fas fa-arrow-right"></i>
+              </div>
+              <h4 class="mt-2 font-medium text-gray-900 group-hover:text-benin-green">Les meilleures plages du Bénin</h4>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Barre latérale -->
+        <aside class="order-1 lg:col-span-4 lg:order-2">
+          <div class="sticky space-y-8 top-8">
+            <!-- Carte Auteur -->
+            <div class="overflow-hidden bg-white border border-gray-100 shadow-sm rounded-2xl">
+              <div class="h-24 bg-gradient-to-r from-benin-green to-benin-green-600"></div>
+              <div class="px-6 pb-6 -mt-12">
+                <img 
+                  src={articleData.author.avatar}
+                  alt={articleData.author.name}
+                  class="object-cover w-24 h-24 mx-auto mb-4 border-4 border-white rounded-full shadow"
+                >
+                <h4 class="mb-1 text-lg font-bold text-center text-gray-900">{articleData.author.name}</h4>
+                <p class="mb-4 text-sm text-center text-gray-600 line-clamp-3">{articleData.author.bio}</p>
+                <a 
+                  href="#" 
+                  class="block w-full py-2 text-sm font-medium text-center text-white transition-colors duration-300 rounded-lg bg-benin-green hover:bg-benin-green-600"
+                >
+                  Voir tous ses articles
+                </a>
+              </div>
+            </div>
+            
+            <!-- Newsletter -->
+            <div class="p-6 overflow-hidden bg-white border border-gray-100 shadow-sm rounded-2xl">
+              <h3 class="mb-4 text-lg font-bold text-gray-900">Abonnez-vous à notre newsletter</h3>
+              <p class="mb-4 text-sm text-gray-600">
+                Recevez nos derniers articles et conseils de voyage directement dans votre boîte mail.
+              </p>
+              <form class="space-y-3">
+                <input 
+                  type="email" 
+                  placeholder="Votre email" 
+                  class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-benin-green focus:border-transparent"
+                  required
+                >
+                <button 
+                  type="submit" 
+                  class="w-full py-2 text-sm font-medium text-white transition-colors duration-300 rounded-lg bg-benin-green hover:bg-benin-green-600"
+                >
+                  S'abonner
+                </button>
+              </form>
+            </div>
+            
+            <!-- Articles populaires -->
+            <div class="p-6 overflow-hidden bg-white border border-gray-100 shadow-sm rounded-2xl">
+              <h3 class="mb-4 text-lg font-bold text-gray-900">Articles populaires</h3>
+              <div class="space-y-4">
+                <a href="#" class="flex gap-3 group">
+                  <img 
+                    src="/img/blog/traditions-vodoun.jpg" 
+                    alt="Traditions Vodoun"
+                    class="object-cover w-20 h-20 rounded-lg"
+                  >
+                  <div>
+                    <h4 class="font-medium text-gray-900 transition-colors duration-300 group-hover:text-benin-green line-clamp-2">
+                      Les traditions Vodoun au cœur de la culture béninoise
+                    </h4>
+                    <div class="mt-1 text-xs text-gray-500">15 Fév 2023</div>
+                  </div>
+                </a>
+                
+                <a href="#" class="flex gap-3 group">
+                  <img 
+                    src="/img/blog/cuisine-benin.jpg" 
+                    alt="Cuisine béninoise"
+                    class="object-cover w-20 h-20 rounded-lg"
+                  >
+                  <div>
+                    <h4 class="font-medium text-gray-900 transition-colors duration-300 group-hover:text-benin-green line-clamp-2">
+                      Découvrez les saveurs de la cuisine béninoise authentique
+                    </h4>
+                    <div class="mt-1 text-xs text-gray-500">3 Mars 2023</div>
+                  </div>
+                </a>
+                
+                <a href="#" class="flex gap-3 group">
+                  <img 
+                    src="/img/blog/artisanat-benin.jpg" 
+                    alt="Artisanat du Bénin"
+                    class="object-cover w-20 h-20 rounded-lg"
+                  >
+                  <div>
+                    <h4 class="font-medium text-gray-900 transition-colors duration-300 group-hover:text-benin-green line-clamp-2">
+                      L'artisanat béninois : techniques ancestrales et créativité
+                    </h4>
+                    <div class="mt-1 text-xs text-gray-500">22 Jan 2023</div>
+                  </div>
+                </a>
+              </div>
+            </div>
+            
+            <!-- Partage sur les réseaux sociaux -->
+            <div class="p-6 overflow-hidden bg-white border border-gray-100 shadow-sm rounded-2xl">
+              <h3 class="mb-4 text-lg font-bold text-gray-900">Partager cet article</h3>
+              <div class="flex flex-wrap gap-3">
+                <a 
+                  href={`https://www.facebook.com/sharer/sharer.php?u=${Astro.url}`} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  class="flex items-center justify-center w-10 h-10 text-white transition-transform duration-300 rounded-full bg-[#3b5998] hover:scale-110"
+                >
+                  <i class="fab fa-facebook-f"></i>
+                </a>
+                
+                <a 
+                  href={`https://twitter.com/intent/tweet?url=${Astro.url}&text=${encodeURIComponent(articleData.title)}`} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  class="flex items-center justify-center w-10 h-10 text-white transition-transform duration-300 rounded-full bg-[#1da1f2] hover:scale-110"
+                >
+                  <i class="fab fa-twitter"></i>
+                </a>
+                
+                <a 
+                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${Astro.url}`} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  class="flex items-center justify-center w-10 h-10 text-white transition-transform duration-300 rounded-full bg-[#0077b5] hover:scale-110"
+                >
+                  <i class="fab fa-linkedin-in"></i>
+                </a>
+                
+                <a 
+                  href={`https://wa.me/?text=${encodeURIComponent(articleData.title + ' ' + Astro.url)}`} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  class="flex items-center justify-center w-10 h-10 text-white transition-transform duration-300 rounded-full bg-[#25d366] hover:scale-110"
+                >
+                  <i class="fab fa-whatsapp"></i>
+                </a>
+                
+                <a 
+                  href={`mailto:?subject=${encodeURIComponent(articleData.title)}&body=${encodeURIComponent('Découvrez cet article intéressant: ' + Astro.url)}`}
+                  class="flex items-center justify-center w-10 h-10 text-white transition-transform duration-300 bg-gray-600 rounded-full hover:scale-110"
+                >
+                  <i class="fas fa-envelope"></i>
+                </a>
+              </div>
+            </div>
+            
+            <!-- Tags -->
+            <div class="p-6 overflow-hidden bg-white border border-gray-100 shadow-sm rounded-2xl">
+              <h3 class="mb-4 text-lg font-bold text-gray-900">Tags populaires</h3>
+              <div class="flex flex-wrap gap-2">
+                {['Culture', 'Voyage', 'Gastronomie', 'Histoire', 'Nature', 'Artisanat', 'Festivals', 'Plages', 'Aventure'].map((tag) => (
+                  <a 
+                    href={`/blog/tag/${tag.toLowerCase()}`}
+                    class="px-3 py-1 text-sm transition-colors duration-300 rounded-full text-benin-green bg-benin-green-50 hover:bg-benin-green hover:text-white"
+                  >
+                    {tag}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </article>
+    
+    <!-- Articles connexes -->
+    <RelatedArticles 
+      currentSlug={articleData.slug} 
+      currentCategory={articleData.category} 
+    />
+
+    <!-- CTA de voyage -->
+    <section class="py-20 text-white bg-gradient-to-r from-benin-green-700 to-benin-green">
+      <div class="container px-4 mx-auto">
+        <div class="max-w-3xl mx-auto text-center">
+          <h2 class="mb-6 text-3xl font-bold md:text-4xl">Prêt à découvrir le Bénin ?</h2>
+          <p class="mb-8 text-lg text-white/80">
+            Laissez-vous tenter par une expérience immersive au cœur de la culture béninoise. 
+            Entre traditions ancestrales, gastronomie savoureuse et paysages époustouflants, 
+            le Bénin n'attend que vous.
+          </p>
+          <div class="flex flex-wrap justify-center gap-4">
+            <a 
+              href="/circuits" 
+              class="px-6 py-3 text-lg font-medium transition-transform duration-300 bg-white rounded-lg text-benin-green hover:scale-105"
+            >
+              Découvrir nos circuits
+            </a>
+            <a 
+              href="/contact" 
+              class="px-6 py-3 text-lg font-medium transition-transform duration-300 border rounded-lg border-white/70 hover:bg-white/10 hover:scale-105"
+            >
+              Nous contacter
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  /* Styles pour les transitions et animations */
+  .prose img {
+    @apply rounded-xl shadow-lg transition-transform duration-300 hover:scale-105;
+  }
+  
+  .prose a {
+    @apply transition-colors duration-300;
+  }
+  
+  .prose blockquote {
+    @apply border-l-4 border-benin-green bg-benin-green-50/30 px-6 py-4 rounded-r-xl;
+  }
+  
+  .prose code {
+    @apply bg-gray-100 px-2 py-1 rounded-md text-benin-green;
+  }
+  
+  /* Animations au défilement */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  article > div {
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
+</style>

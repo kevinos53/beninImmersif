@@ -862,14 +862,7 @@ export default {
 }
 
 /* Animation du texte gradient */
-.culinary-gradient {
-  background: linear-gradient(90deg, #FCD116, #E8112D, #92400E, #FCD116);
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradient-shift 6s ease infinite;
-  display: inline-block;
-}
+
 
 @keyframes gradient-shift {
   0% { background-position: 0% 50%; }

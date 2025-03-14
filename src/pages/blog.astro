@@ -1,0 +1,88 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import BlogHero from '../components/blog/BlogHero.vue';
+import BlogList from '../components/blog/BlogList.vue';
+import BlogCategories from '../components/blog/BlogCategories.vue';
+
+
+const allBlogPosts = await getCollection('blog');
+
+
+
+
+// Trier les articles par date de publication (du plus récent au plus ancien)
+const sortedPosts = allBlogPosts.sort((a, b) => 
+  new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()
+);
+
+// Trouver l'article mis en avant (priorité aux articles marqués comme featured)
+const featuredPost = sortedPosts.find(post => post.data.featured) || sortedPosts[0];
+
+// Créer une liste unique de catégories
+const categories = [...new Set(sortedPosts.map(post => post.data.category))];
+
+// Transformer les articles pour les composants Vue
+const articles = sortedPosts.map(post => ({
+  slug: post.data.slug,
+  title: post.data.title,
+  description: post.data.description,
+  content: post.body,
+  publishDate: post.data.pubDate,
+  category: post.data.category,
+  author: post.data.author,
+  image: post.data.heroImage,
+  tags: post.data.tags,
+  readingTime: post.data.readingTime
+}));
+
+// Préparer l'article mis en avant
+const featuredArticle = {
+  slug: featuredPost.data.slug,
+  title: featuredPost.data.title,
+  description: featuredPost.data.description,
+  content: featuredPost.body,
+  publishDate: featuredPost.data.pubDate,
+  category: featuredPost.data.category,
+  author: featuredPost.data.author,
+  image: featuredPost.data.heroImage,
+  tags: featuredPost.data.tags,
+  readingTime: featuredPost.data.readingTime
+};
+---
+
+<Layout 
+  title="Blog - Bénin Immersion" 
+  description="Découvrez nos articles sur la culture, les traditions et les attractions touristiques du Bénin"
+>
+  <main class="min-h-screen bg-gradient-to-b from-white to-benin-green-50/20">
+    <!-- En-tête avec l'article mis en avant -->
+    <BlogHero client:visible article={featuredArticle} />
+    
+    <!-- Liste des articles et catégories -->
+    <section class="container px-4 py-16 mx-auto">
+      <div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
+        <!-- Barre latérale avec les catégories -->
+        <aside class="lg:col-span-3">
+          <BlogCategories client:visible categories={categories} />
+        </aside>
+        
+        <!-- Liste des articles -->
+        <div class="lg:col-span-9">
+          <BlogList client:visible articles={articles} />
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  /* Styles pour les transitions et animations */
+  :global(.article-card) {
+    @apply transition-transform duration-300 hover:-translate-y-2;
+  }
+  
+  :global(.category-button) {
+    @apply transition-colors duration-300;
+  }
+</style>

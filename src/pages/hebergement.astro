@@ -1,0 +1,99 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AccommodationHeader from '../components/accommodation/AccommodationHeader.vue';
+import AccommodationFilters from '../components/accommodation/AccommodationFilters.vue';
+import FeaturedAccommodation from '../components/accommodation/FeaturedAccommodation.vue';
+import AccommodationListing from '../components/accommodation/AccommodationListing.vue';
+import RegionSelector from '../components/accommodation/RegionSelector.vue';
+import TestimonialSlider from '../components/accommodation/TestimonialSlider.vue';
+import PiniaSetup from '../components/accommodation/PiniaSetup.vue';
+
+
+---
+
+<Layout 
+  title="Hébergements au Bénin - Hôtels, Appartements & Résidences"
+  description="Découvrez une sélection exclusive d'hébergements authentiques et confortables au cœur du Bénin. Des hôtels de luxe aux maisons d'hôtes traditionnelles pour une expérience inoubliable."
+ 
+>
+  
+  
+ 
+  
+  <main class="relative overflow-hidden">
+	<PiniaSetup client:load />
+    <!-- En-tête avec bannière panoramique et recherche immersive -->
+    <AccommodationHeader client:load />
+    
+    <!-- Filtres de recherche interactifs -->
+    <section class="sticky top-0 z-30 py-6 bg-white shadow-md">
+      <AccommodationFilters client:load />
+    </section>
+    
+    <!-- Sélecteur de région avec carte interactive -->
+    <!-- <RegionSelector client:visible /> -->
+    
+    <!-- Hébergement en vedette avec galerie dynamique -->
+    <FeaturedAccommodation client:visible />
+    
+    <!-- Liste des hébergements filtrables -->
+    <section class="relative py-16 overflow-hidden bg-gradient-to-b from-white to-benin-green-50/20">
+      <!-- Éléments décoratifs -->
+      <div class="absolute inset-0 pointer-events-none opacity-10">
+        <div class="absolute top-0 right-0 w-1/3 h-1/2 bg-benin-yellow blur-[150px]"></div>
+        <div class="absolute bottom-0 left-0 w-1/4 h-1/3 bg-benin-green blur-[120px]"></div>
+      </div>
+      
+      <div class="container relative z-10 px-4 mx-auto">
+        <div class="flex flex-col items-start justify-between mb-12 md:flex-row md:items-center">
+          <div>
+            <span class="inline-block px-3 py-1 mb-3 text-sm font-medium rounded-full bg-benin-green/20 text-benin-green-600">SÉJOURS INOUBLIABLES</span>
+            <h2 class="text-3xl font-bold text-gray-800 md:text-4xl font-display">
+              Trouvez votre <span class="text-benin-green">hébergement idéal</span>
+            </h2>
+          </div>
+        </div>
+        
+        <!-- Liste d'hébergements interactive -->
+        <AccommodationListing client:visible />
+      </div>
+    </section>
+    
+    <!-- Témoignages avec slider premium -->
+    <TestimonialSlider client:visible />
+    
+    <!-- Appel à l'action -->
+    <section class="relative py-16 bg-benin-green text-white overflow-hidden">
+      <!-- Éléments décoratifs -->
+      <div class="absolute inset-0 pointer-events-none opacity-10">
+        <div class="absolute top-0 left-0 w-1/2 h-1/2 bg-benin-yellow blur-[150px]"></div>
+        <div class="absolute bottom-0 right-0 w-1/3 h-1/3 bg-white blur-[100px]"></div>
+      </div>
+      
+      <div class="container relative z-10 px-4 mx-auto">
+        <div class="max-w-3xl mx-auto text-center">
+          <h2 class="text-3xl font-bold md:text-4xl font-display mb-4">
+            Prêt à vivre l'expérience béninoise ?
+          </h2>
+          <p class="text-benin-green-50 text-lg mb-8">
+            Réservez dès maintenant votre hébergement et préparez-vous à vivre un séjour authentique et mémorable au cœur du Bénin.
+          </p>
+          <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+            <a 
+              href="/contact" 
+              class="px-6 py-3 bg-white text-benin-green font-medium rounded-lg hover:bg-benin-yellow hover:text-benin-green-600 transition-colors duration-300 shadow-lg"
+            >
+              Nous contacter
+            </a>
+            <a 
+              href="#" 
+              class="px-6 py-3 border-2 border-white text-white font-medium rounded-lg hover:bg-white/10 transition-colors duration-300"
+            >
+              Réserver une consultation
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>

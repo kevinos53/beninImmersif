@@ -1,0 +1,154 @@
+---
+import Layout from '../layouts/Layout.astro';
+import EventsHeader from '../components/events/EventsHeader.vue';
+import EventsList from '../components/events/EventsList.vue';
+import EventsCalendar from '../components/events/EventsCalendar.vue';
+import FeaturedEvent from '../components/events/FeaturedEvent.vue';
+
+---
+
+<Layout title="Événements au Bénin - Festivals, Concerts & Célébrations">
+    <main class="relative">
+        <!-- En-tête de la section événements -->
+        <EventsHeader client:load />
+        
+        <!-- Événement vedette -->
+        <FeaturedEvent client:visible />
+        
+        <!-- Liste des événements -->
+        <section class="px-4 py-16 bg-gradient-to-b from-white to-benin-green-50/20 md:px-8">
+            <div class="container mx-auto">
+                <div class="flex flex-col gap-8 lg:flex-row">
+                    <!-- Vue calendrier/liste avec filtres -->
+                    <div class="lg:w-3/4">
+                        <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+                            <h2 class="text-3xl font-bold text-gray-800 md:text-4xl">
+                                <span class="text-benin-green">Explorez</span> nos événements
+                            </h2>
+                            <div class="flex gap-2">
+                                <button id="list-view" class="px-4 py-2 text-gray-600 transition-colors duration-300 bg-white rounded-l-lg hover:bg-benin-green hover:text-white">
+                                    <i class="mr-2 fas fa-list"></i> Liste
+                                </button>
+                                <button id="calendar-view" class="px-4 py-2 text-gray-600 transition-colors duration-300 bg-white border rounded-r-lg border-gray-100 hover:bg-benin-green hover:text-white">
+                                    <i class="mr-2 fas fa-calendar-alt"></i> Calendrier
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Vue liste (par défaut) -->
+                        <EventsList client:visible />
+                        
+                        <!-- Vue calendrier (masquée par défaut) -->
+                        <div class="hidden">
+                            <EventsCalendar client:visible />
+                        </div>
+                    </div>
+                    
+                    <!-- Sidebar avec filtres et événements à venir -->
+                    <div class="space-y-8 lg:w-1/4">
+                        <!-- Filtres -->
+                        <div class="p-6 bg-white shadow-lg rounded-xl">
+                            <h3 class="mb-4 text-xl font-semibold text-gray-800">Filtres</h3>
+                            
+                            <!-- Catégories -->
+                            <div class="mb-6">
+                                <h4 class="mb-3 font-medium text-benin-green">Catégories</h4>
+                                <div class="space-y-2">
+                                    <label class="flex items-center text-gray-600">
+                                        <input type="checkbox" class="mr-2 accent-benin-green"> 
+                                        Festivals vodou
+                                    </label>
+                                    <label class="flex items-center text-gray-600">
+                                        <input type="checkbox" class="mr-2 accent-benin-green"> 
+                                        Célébrations traditionnelles
+                                    </label>
+                                    <label class="flex items-center text-gray-600">
+                                        <input type="checkbox" class="mr-2 accent-benin-green"> 
+                                        Concerts & musique
+                                    </label>
+                                    <label class="flex items-center text-gray-600">
+                                        <input type="checkbox" class="mr-2 accent-benin-green"> 
+                                        Gastronomie
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Période -->
+                            <div>
+                                <h4 class="mb-3 font-medium text-benin-green">Période</h4>
+                                <div class="space-y-2">
+                                    <label class="flex items-center text-gray-600">
+                                        <input type="radio" name="period" class="mr-2 accent-benin-green"> 
+                                        Tous
+                                    </label>
+                                    <label class="flex items-center text-gray-600">
+                                        <input type="radio" name="period" class="mr-2 accent-benin-green" checked> 
+                                        Ce mois-ci
+                                    </label>
+                                    <label class="flex items-center text-gray-600">
+                                        <input type="radio" name="period" class="mr-2 accent-benin-green"> 
+                                        Prochains 3 mois
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Événements à venir -->
+                        <div class="p-6 bg-white shadow-lg rounded-xl">
+                            <h3 class="mb-4 text-xl font-semibold text-gray-800">À ne pas manquer</h3>
+                            <div class="space-y-4">
+                                <!-- Mini cartes d'événement -->
+                                <div class="flex items-center gap-3 group">
+                                    <div class="flex items-center justify-center flex-shrink-0 w-16 h-16 p-1 text-center bg-benin-green-50 rounded">
+                                        <div>
+                                            <div class="text-xs font-medium text-benin-green">MAR</div>
+                                            <div class="text-xl font-bold text-benin-green">15</div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-gray-800 transition-colors duration-300 group-hover:text-benin-green">Festival Vodoun</h4>
+                                        <p class="text-xs text-gray-500">Ouidah, Bénin</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Autres événements à afficher ici -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+      
+    </main>
+</Layout>
+
+<script>
+    // Logique pour basculer entre les vues liste et calendrier
+    document.addEventListener('DOMContentLoaded', () => {
+        const listButton = document.getElementById('list-view');
+        const calendarButton = document.getElementById('calendar-view');
+        const listView = document.querySelector('.events-list-container');
+        const calendarView = document.querySelector('.events-calendar-container');
+        
+        if (listButton && calendarButton && listView && calendarView) {
+            listButton.addEventListener('click', () => {
+                listView.classList.remove('hidden');
+                calendarView.classList.add('hidden');
+                listButton.classList.add('bg-benin-green', 'text-white');
+                listButton.classList.remove('bg-white', 'text-gray-600');
+                calendarButton.classList.remove('bg-benin-green', 'text-white');
+                calendarButton.classList.add('bg-white', 'text-gray-600');
+            });
+            
+            calendarButton.addEventListener('click', () => {
+                listView.classList.add('hidden');
+                calendarView.classList.remove('hidden');
+                calendarButton.classList.add('bg-benin-green', 'text-white');
+                calendarButton.classList.remove('bg-white', 'text-gray-600');
+                listButton.classList.remove('bg-benin-green', 'text-white');
+                listButton.classList.add('bg-white', 'text-gray-600');
+            });
+        }
+    });
+</script>

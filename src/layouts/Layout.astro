@@ -9,6 +9,8 @@ const description = Astro.props.description || "Immergez-vous dans la culture b�
 
 import '../assets/css/app.css';
 import Navigation from '../components/Navigation.vue';
+import BackToTop from '../components/ui/BackToTop.vue';
+import ProgressBar from '../components/ui/ProgressBar.vue';
 ---
 
 <!DOCTYPE html>
@@ -38,38 +40,38 @@ import Navigation from '../components/Navigation.vue';
 		<!-- Font Awesome -->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 	</head>
-	<body class="font-sans text-gray-900 antialiased">
+	<body class="font-sans antialiased text-gray-900">
 		
 		<!-- Ajout du composant Navigation avec client:load comme les autres composants Vue -->
 		<Navigation client:load />
 		
 		<slot />
 		
-		<footer class="bg-gray-900 text-white py-12">
-			<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+		<footer class="py-12 text-white bg-gray-900">
+			<div class="container px-4 mx-auto sm:px-6 lg:px-8">
+				<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
 					<!-- Logo et description -->
 					<div>
 						<div class="flex items-center mb-4">
-							<div class="w-10 h-10 bg-benin-green rounded-lg flex items-center justify-center mr-3">
-								<span class="font-display font-bold text-white text-xl">B</span>
+							<div class="flex items-center justify-center w-10 h-10 mr-3 rounded-lg bg-benin-green">
+								<span class="text-xl font-bold text-white font-display">B</span>
 							</div>
-							<div class="font-display font-bold text-xl">Bénin Immersion</div>
+							<div class="text-xl font-bold font-display">Bénin Immersion</div>
 						</div>
-						<p class="text-gray-400 mb-4">
+						<p class="mb-4 text-gray-400">
 							Votre passerelle vers une expérience authentique au cœur de l'Afrique de l'Ouest.
 						</p>
 						<div class="flex space-x-4">
-							<a href="#" class="text-gray-400 hover:text-white transition-colors">
+							<a href="#" class="text-gray-400 transition-colors hover:text-white">
 								<i class="fab fa-facebook-f"></i>
 							</a>
-							<a href="#" class="text-gray-400 hover:text-white transition-colors">
+							<a href="#" class="text-gray-400 transition-colors hover:text-white">
 								<i class="fab fa-instagram"></i>
 							</a>
-							<a href="#" class="text-gray-400 hover:text-white transition-colors">
+							<a href="#" class="text-gray-400 transition-colors hover:text-white">
 								<i class="fab fa-twitter"></i>
 							</a>
-							<a href="#" class="text-gray-400 hover:text-white transition-colors">
+							<a href="#" class="text-gray-400 transition-colors hover:text-white">
 								<i class="fab fa-youtube"></i>
 							</a>
 						</div>
@@ -77,57 +79,59 @@ import Navigation from '../components/Navigation.vue';
 					
 					<!-- Liens rapides -->
 					<div>
-						<h3 class="font-bold text-lg mb-4">Liens rapides</h3>
+						<h3 class="mb-4 text-lg font-bold">Liens rapides</h3>
 						<ul class="space-y-2">
-							<li><a href="#" class="text-gray-400 hover:text-white transition-colors">Accueil</a></li>
-							<li><a href="#culture" class="text-gray-400 hover:text-white transition-colors">Culture</a></li>
-							<li><a href="#nature" class="text-gray-400 hover:text-white transition-colors">Nature</a></li>
-							<li><a href="#experiences" class="text-gray-400 hover:text-white transition-colors">Expériences</a></li>
-							<li><a href="#gastronomie" class="text-gray-400 hover:text-white transition-colors">Gastronomie</a></li>
-							<li><a href="#contact" class="text-gray-400 hover:text-white transition-colors">Contact</a></li>
+							<li><a href="#" class="text-gray-400 transition-colors hover:text-white">Accueil</a></li>
+							<li><a href="#culture" class="text-gray-400 transition-colors hover:text-white">Culture</a></li>
+							<li><a href="#nature" class="text-gray-400 transition-colors hover:text-white">Nature</a></li>
+							<li><a href="#experiences" class="text-gray-400 transition-colors hover:text-white">Expériences</a></li>
+							<li><a href="#gastronomie" class="text-gray-400 transition-colors hover:text-white">Gastronomie</a></li>
+							<li><a href="#contact" class="text-gray-400 transition-colors hover:text-white">Contact</a></li>
 						</ul>
 					</div>
 					
 					<!-- Informations légales -->
 					<div>
-						<h3 class="font-bold text-lg mb-4">Informations légales</h3>
+						<h3 class="mb-4 text-lg font-bold">Informations légales</h3>
 						<ul class="space-y-2">
-							<li><a href="#" class="text-gray-400 hover:text-white transition-colors">Mentions légales</a></li>
-							<li><a href="#" class="text-gray-400 hover:text-white transition-colors">Politique de confidentialité</a></li>
-							<li><a href="#" class="text-gray-400 hover:text-white transition-colors">Conditions générales</a></li>
-							<li><a href="#" class="text-gray-400 hover:text-white transition-colors">Cookies</a></li>
+							<li><a href="#" class="text-gray-400 transition-colors hover:text-white">Mentions légales</a></li>
+							<li><a href="#" class="text-gray-400 transition-colors hover:text-white">Politique de confidentialité</a></li>
+							<li><a href="#" class="text-gray-400 transition-colors hover:text-white">Conditions générales</a></li>
+							<li><a href="#" class="text-gray-400 transition-colors hover:text-white">Cookies</a></li>
 						</ul>
 					</div>
 					
 					<!-- Contact -->
 					<div>
-						<h3 class="font-bold text-lg mb-4">Contact</h3>
+						<h3 class="mb-4 text-lg font-bold">Contact</h3>
 						<ul class="space-y-2">
 							<li class="flex items-start">
-								<i class="fas fa-map-marker-alt mt-1 mr-3 text-benin-green"></i>
+								<i class="mt-1 mr-3 fas fa-map-marker-alt text-benin-green"></i>
 								<span class="text-gray-400">123 Avenue de la République<br>Cotonou, Bénin</span>
 							</li>
 							<li class="flex items-start">
-								<i class="fas fa-phone-alt mt-1 mr-3 text-benin-green"></i>
+								<i class="mt-1 mr-3 fas fa-phone-alt text-benin-green"></i>
 								<span class="text-gray-400">+229 21 12 34 56</span>
 							</li>
 							<li class="flex items-start">
-								<i class="fas fa-envelope mt-1 mr-3 text-benin-green"></i>
+								<i class="mt-1 mr-3 fas fa-envelope text-benin-green"></i>
 								<span class="text-gray-400">contact@benin-immersion.com</span>
 							</li>
 						</ul>
 					</div>
 				</div>
 				
-				<div class="border-t border-gray-800 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center">
-					<p class="text-gray-500 text-sm mb-4 md:mb-0">
+				<div class="flex flex-col items-center justify-between pt-6 mt-10 border-t border-gray-800 md:flex-row">
+					<p class="mb-4 text-sm text-gray-500 md:mb-0">
 						&copy; {new Date().getFullYear()} Bénin Immersion. Tous droits réservés.
 					</p>
-					<p class="text-gray-500 text-sm">
+					<p class="text-sm text-gray-500">
 						Conçu avec <i class="fas fa-heart text-benin-culture"></i> pour promouvoir le tourisme au Bénin
 					</p>
 				</div>
 			</div>
 		</footer>
+		<BackToTop client:load />
+		<ProgressBar client:load />
 	</body>
 </html> 

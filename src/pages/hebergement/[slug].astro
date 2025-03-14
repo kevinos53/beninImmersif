@@ -1,0 +1,422 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PhotoGallery from '../../components/accommodation-detail/PhotoGallery.vue';
+import BookingForm from '../../components/accommodation-detail/BookingForm.vue';
+import AccommodationFeatures from '../../components/accommodation-detail/AccommodationFeatures.vue';
+import AccommodationReviews from '../../components/accommodation-detail/AccommodationReviews.vue';
+import AccommodationMap from '../../components/accommodation-detail/AccommodationMap.vue';
+import SimilarAccommodations from '../../components/accommodation-detail/SimilarAccommodations.vue';
+
+export async function getStaticPaths() {
+  // En production, vous récupéreriez ces données depuis une API ou une base de données
+  // Pour l'instant, nous retournons un seul hébergement pour démonstration
+  return [
+    {
+      params: { slug: "royal-palm-hotel-spa" },
+      props: {
+        accommodation: {
+          id: 7,
+          slug: "royal-palm-hotel-spa",
+          name: "Royal Palm Hôtel & Spa",
+          type: "Hôtel",
+          stars: 5,
+          price: 200,
+          priceDiscounted: 180, // Prix avec réduction
+          discountPercentage: 10, // % de réduction
+          images: [
+            "/img/accommodation/royal-palm-1.webp",
+            "/img/accommodation/royal-palm-2.webp",
+            "/img/accommodation/royal-palm-3.webp",
+            "/img/accommodation/royal-palm-4.webp",
+            "/img/accommodation/royal-palm-5.webp",
+            "/img/accommodation/royal-palm-6.webp"
+          ],
+          location: {
+            address: "Boulevard de la Marina",
+            city: "Cotonou",
+            region: "Littoral",
+            country: "Bénin",
+            coordinates: { lat: 6.3653, lng: 2.3872 }
+          },
+          rating: 9.2,
+          reviewsCount: 142,
+          isNew: false,
+          isFeatured: true,
+          description: "Niché au cœur de Cotonou, le Royal Palm Hôtel & Spa offre une expérience de luxe incomparable combinant élégance contemporaine et touches traditionnelles béninoises. Avec ses chambres spacieuses offrant une vue imprenable sur l'océan Atlantique, cet établissement 5 étoiles est l'endroit idéal pour découvrir le Bénin tout en profitant d'un confort exceptionnel.\n\nNotre restaurant gastronomique met en valeur les saveurs locales réinventées par notre chef étoilé, tandis que notre spa primé vous propose des soins inspirés des traditions ancestrales béninoises. La piscine à débordement surplombant l'océan vous offre un cadre idyllique pour vous détendre après une journée d'exploration.",
+          shortDescription: "Hôtel de luxe avec spa et vue sur l'océan au cœur de Cotonou.",
+          amenities: [
+            { icon: "fa-wifi", text: "Wi-Fi gratuit" },
+            { icon: "fa-swimming-pool", text: "Piscine à débordement" },
+            { icon: "fa-spa", text: "Spa & bien-être" },
+            { icon: "fa-utensils", text: "Restaurant gastronomique" },
+            { icon: "fa-cocktail", text: "Bar panoramique" },
+            { icon: "fa-concierge-bell", text: "Service en chambre 24/7" },
+            { icon: "fa-car", text: "Parking gratuit" },
+            { icon: "fa-dumbbell", text: "Salle de fitness" },
+            { icon: "fa-umbrella-beach", text: "Accès plage privée" },
+            { icon: "fa-tv", text: "TV écran plat" },
+            { icon: "fa-wind", text: "Climatisation" },
+            { icon: "fa-user-shield", text: "Coffre-fort" }
+          ],
+          services: [
+            { icon: "fa-broom", text: "Ménage quotidien" },
+            { icon: "fa-shuttle-van", text: "Navette aéroport" },
+            { icon: "fa-map", text: "Excursions organisées" },
+            { icon: "fa-tshirt", text: "Service de blanchisserie" },
+            { icon: "fa-baby", text: "Garde d'enfants" },
+            { icon: "fa-language", text: "Personnel multilingue" }
+          ],
+          rooms: [
+            {
+              id: 1,
+              name: "Chambre Deluxe Vue Océan",
+              price: 200,
+              image: "/img/accommodation/royal-palm-room-1.webp",
+              capacity: 2,
+              bedType: "Grand lit double",
+              size: 35, // en m²
+              description: "Spacieuse chambre avec vue imprenable sur l'océan Atlantique"
+            },
+            {
+              id: 2,
+              name: "Suite Junior",
+              price: 280,
+              image: "/img/accommodation/royal-palm-room-2.webp",
+              capacity: 2,
+              bedType: "Grand lit double",
+              size: 45, // en m²
+              description: "Suite élégante avec salon séparé et terrasse privée"
+            },
+            {
+              id: 3,
+              name: "Suite Présidentielle",
+              price: 450,
+              image: "/img/accommodation/royal-palm-room-3.webp",
+              capacity: 4,
+              bedType: "Grand lit double + canapé-lit",
+              size: 75, // en m²
+              description: "Notre suite la plus luxueuse avec vue panoramique sur l'océan"
+            }
+          ],
+          nearbyAttractions: [
+            { name: "Marché Dantokpa", distance: 2.5, unit: "km" },
+            { name: "Fondation Zinsou", distance: 1.8, unit: "km" },
+            { name: "Cathédrale Notre-Dame", distance: 3.2, unit: "km" },
+            { name: "Plage de Fidjrossè", distance: 5, unit: "km" }
+          ],
+          policies: {
+            checkIn: "14:00",
+            checkOut: "12:00",
+            cancellation: "Annulation gratuite jusqu'à 48h avant l'arrivée. Après cette période, la première nuit sera facturée.",
+            children: "Les enfants de tous âges sont les bienvenus. Les enfants de moins de 12 ans séjournent gratuitement dans les lits existants.",
+            pets: "Les animaux ne sont pas admis dans cet établissement.",
+            paymentOptions: ["Carte de crédit", "Espèces"]
+          },
+          reviews: [
+            {
+              id: 1,
+              author: "Marie Dupont",
+              nationality: "France",
+              avatar: "/img/testimonials/avatar-1.jpg",
+              rating: 9.5,
+              date: "2024-02-15",
+              title: "Séjour exceptionnel",
+              comment: "Notre séjour au Royal Palm a été absolument parfait. Le personnel était attentionné, la chambre spacieuse avec une vue imprenable sur l'océan, et le restaurant proposait une cuisine délicieuse mélangeant saveurs béninoises et internationales. Le spa était également exceptionnel, avec des soins inspirés des traditions locales.",
+              categories: {
+                cleanliness: 10,
+                comfort: 9.5,
+                location: 9,
+                facilities: 9.5,
+                staff: 10,
+                value: 9
+              }
+            },
+            {
+              id: 2,
+              author: "John Smith",
+              nationality: "Royaume-Uni",
+              avatar: "/img/testimonials/avatar-2.jpg",
+              rating: 8.8,
+              date: "2024-01-20",
+              title: "Une oasis de luxe à Cotonou",
+              comment: "Cet hôtel est vraiment un havre de paix au milieu de l'agitation de Cotonou. La chambre était impeccable, le personnel serviable et le petit-déjeuner excellent. La piscine à débordement est à couper le souffle, surtout au coucher du soleil. Seul petit bémol, le prix des repas au restaurant qui est un peu élevé.",
+              categories: {
+                cleanliness: 9,
+                comfort: 9,
+                location: 8,
+                facilities: 9,
+                staff: 9.5,
+                value: 8.5
+              }
+            },
+            {
+              id: 3,
+              author: "Fatou Diallo",
+              nationality: "Sénégal",
+              avatar: "/img/testimonials/avatar-3.jpg",
+              rating: 9.7,
+              date: "2024-03-05",
+              title: "L'excellence africaine",
+              comment: "Je voyage beaucoup en Afrique de l'Ouest et je dois dire que le Royal Palm est l'un des meilleurs hôtels que j'ai eu la chance de fréquenter. Le mélange d'élégance internationale et d'authenticité béninoise est parfaitement dosé. J'ai particulièrement apprécié le spa et ses soins traditionnels. Le personnel est exceptionnellement formé et attentif.",
+              categories: {
+                cleanliness: 10,
+                comfort: 10,
+                location: 9,
+                facilities: 10,
+                staff: 10,
+                value: 9.5
+              }
+            }
+          ]
+        }
+      }
+    }
+  ];
+}
+
+const { accommodation } = Astro.props;
+
+// Générer les méta-données pour la page
+const metaTitle = `${accommodation.name} - Hébergement de luxe à ${accommodation.location.city}, Bénin`;
+const metaDescription = accommodation.shortDescription;
+
+// Pour le schema.org des avis clients (SEO)
+const aggregateRating = {
+  '@type': 'AggregateRating',
+  'ratingValue': accommodation.rating,
+  'reviewCount': accommodation.reviewsCount
+};
+---
+
+<Layout 
+  title={metaTitle}
+  description={metaDescription}
+ 
+>
+  <style>
+    /* Animations et styles spécifiques à la page */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .animate-fade-up {
+      animation: fadeUp 0.6s ease-out forwards;
+    }
+    
+    .animate-delay-1 {
+      animation-delay: 0.1s;
+    }
+    
+    .animate-delay-2 {
+      animation-delay: 0.2s;
+    }
+    
+    .animate-delay-3 {
+      animation-delay: 0.3s;
+    }
+
+    /* Style pour le fixed CTA sur mobile */
+    .mobile-booking-bar {
+      box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1), 0 -2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+  </style>
+
+  <!-- Schema.org pour le référencement (SEO) -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'Hotel',
+    'name': accommodation.name,
+    'image': accommodation.images[0],
+    'description': accommodation.description,
+    'address': {
+      '@type': 'PostalAddress',
+      'streetAddress': accommodation.location.address,
+      'addressLocality': accommodation.location.city,
+      'addressRegion': accommodation.location.region,
+      'addressCountry': accommodation.location.country
+    },
+    'geo': {
+      '@type': 'GeoCoordinates',
+      'latitude': accommodation.location.coordinates.lat,
+      'longitude': accommodation.location.coordinates.lng
+    },
+    'starRating': {
+      '@type': 'Rating',
+      'ratingValue': accommodation.stars
+    },
+    'priceRange': `${accommodation.price}€`,
+    'telephone': '+229 XX XX XX XX',
+    'aggregateRating': aggregateRating
+  })}>
+  </script>
+
+  <main class="bg-white">
+    <!-- Galerie de photos -->
+    <PhotoGallery 
+      images={accommodation.images}
+      accommodationName={accommodation.name}
+      client:load 
+    />
+    
+    <!-- Corps principal -->
+    <div class="container px-4 mx-auto py-8">
+      <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Section principale (70%) -->
+        <div class="lg:w-[70%]">
+          <!-- En-tête / Info principale -->
+          <div class="mb-8 opacity-0 animate-fade-up">
+            <!-- Type d'hébergement et étoiles -->
+            <div class="flex items-center gap-3 mb-2">
+              <span class="px-3 py-1 text-xs font-medium rounded-full bg-benin-green-50 text-benin-green-600">
+                {accommodation.type}
+              </span>
+              
+              {accommodation.stars > 0 && (
+                <div class="flex items-center">
+                  {Array(accommodation.stars).fill().map((_, i) => (
+                    <i class="fas fa-star text-benin-yellow text-xs"></i>
+                  ))}
+                </div>
+              )}
+              
+              {accommodation.isFeatured && (
+                <span class="px-3 py-1 text-xs font-medium rounded-full bg-benin-yellow-50 text-benin-yellow-600">
+                  <i class="fas fa-award mr-1"></i> Coup de cœur
+                </span>
+              )}
+              
+              {accommodation.isNew && (
+                <span class="px-3 py-1 text-xs font-medium rounded-full bg-benin-red-50 text-benin-red-600">
+                  Nouveau
+                </span>
+              )}
+            </div>
+            
+            <!-- Nom et localisation -->
+            <h1 class="text-3xl font-bold text-gray-800 md:text-4xl font-display mb-2">
+              {accommodation.name}
+            </h1>
+            
+            <div class="flex items-center text-gray-600 mb-4">
+              <i class="fas fa-map-marker-alt text-benin-green mr-2"></i>
+              <span>{accommodation.location.address}, {accommodation.location.city}, {accommodation.location.country}</span>
+            </div>
+            
+            <!-- Note et avis -->
+            <div class="flex items-center gap-4">
+              <div class="flex items-center px-3 py-1 bg-benin-green text-white rounded-lg">
+                <span class="font-bold mr-1">{accommodation.rating}</span>
+                <span class="text-xs">/10</span>
+              </div>
+              
+              <div class="text-gray-600">
+                <span class="font-semibold">{accommodation.rating >= 9 ? 'Exceptionnel' : accommodation.rating >= 8 ? 'Excellent' : 'Très bien'}</span>
+                <span class="text-sm ml-1">({accommodation.reviewsCount} avis)</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Description -->
+          <div class="mb-10 opacity-0 animate-fade-up animate-delay-1">
+            <h2 class="text-xl font-bold text-gray-800 mb-4 font-display">
+              Description
+            </h2>
+            
+            <div class="prose text-gray-700 max-w-none">
+              {accommodation.description.split('\n\n').map((paragraph) => (
+                <p class="mb-4">{paragraph}</p>
+              ))}
+            </div>
+          </div>
+          
+          <!-- Caractéristiques et équipements -->
+          <AccommodationFeatures 
+            amenities={accommodation.amenities}
+            services={accommodation.services}
+            policies={accommodation.policies}
+            client:visible
+          />
+          
+          <!-- Carte et environs -->
+          <!-- <AccommodationMap 
+            location={accommodation.location}
+            nearbyAttractions={accommodation.nearbyAttractions}
+            client:visible
+          /> -->
+          
+          <!-- Avis -->
+          <AccommodationReviews 
+            reviews={accommodation.reviews}
+            rating={accommodation.rating}
+            reviewsCount={accommodation.reviewsCount}
+            client:visible
+          />
+        </div>
+        
+        <!-- Sidebar réservation (30%) -->
+        <div class="lg:w-[30%] mt-6 lg:mt-0">
+          <div class="sticky top-24">
+            <BookingForm 
+              accommodation={accommodation}
+              client:load
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Hébergements similaires -->
+    <SimilarAccommodations 
+      currentAccommodationId={accommodation.id}
+      location={accommodation.location.city}
+      type={accommodation.type}
+      client:visible
+    />
+    
+    <!-- Barre de réservation mobile (visible uniquement sur mobile) -->
+    <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-white mobile-booking-bar flex items-center justify-between px-4 py-3 z-50">
+      <div>
+        <div class="flex items-center">
+          <span class="text-lg font-bold text-gray-800 mr-2">{accommodation.priceDiscounted || accommodation.price}€</span>
+          {accommodation.priceDiscounted && (
+            <span class="text-sm line-through text-gray-500">{accommodation.price}€</span>
+          )}
+          <span class="text-xs text-gray-500 ml-1">/ nuit</span>
+        </div>
+        {accommodation.rating && (
+          <div class="flex items-center text-xs">
+            <span class="text-benin-green font-bold mr-1">{accommodation.rating}</span>
+            <span class="text-gray-600">({accommodation.reviewsCount} avis)</span>
+          </div>
+        )}
+      </div>
+      
+      <button id="mobile-booking-button" class="px-4 py-2 bg-benin-green text-white font-medium rounded-lg hover:bg-benin-green-600 transition-colors shadow-md">
+        Réserver
+      </button>
+    </div>
+  </main>
+
+  <!-- Script pour le bouton mobile -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const mobileButton = document.getElementById('mobile-booking-button');
+      if (mobileButton) {
+        mobileButton.addEventListener('click', () => {
+          // Faire défiler jusqu'au formulaire de réservation
+          const bookingForm = document.querySelector('.booking-form');
+          if (bookingForm) {
+            bookingForm.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      }
+    });
+  </script>
+</Layout>

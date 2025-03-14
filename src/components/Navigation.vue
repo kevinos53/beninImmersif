@@ -3,21 +3,21 @@
     <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         <!-- Logo -->
-        <div class="flex items-center">
+        <a href="/" class="flex items-center">
           <div class="flex items-center justify-center w-10 h-10 transition-transform duration-300 rounded-full bg-benin-green hover:scale-110">
             <span class="font-bold text-white">B</span>
           </div>
           <div class="ml-3">
             <span class="text-xl font-bold text-benin-green font-display">Bénin Immersif</span>
           </div>
-        </div>
+        </a>
         
         <!-- Desktop navigation -->
         <div class="items-center hidden space-x-6 lg:flex">
           <a v-for="(item, index) in navigationItems" 
              :key="index"
-             @click.prevent="navigateTo(item.section)"
-             href="#"
+             @click.prevent="item.link ? navigateTo(item) : scrollToSection(item.section)"
+             :href="item.link ? item.section : item.section"
              :class="[
                'relative py-2 text-gray-700 hover:text-benin-green transition-colors duration-300',
                activeSection === item.section ? 'text-benin-green font-medium nav-active' : ''
@@ -55,8 +55,8 @@
       <div class="px-4 py-3 space-y-1">
         <a v-for="(item, index) in navigationItems" 
            :key="index"
-           @click.prevent="navigateTo(item.section)"
-           href="#"
+           @click.prevent="navigateTo(item)"
+           :href="item.section"
            :class="[
              'block py-2 transition-colors duration-300 flex items-center',
              activeSection === item.section ? 'text-benin-green font-medium bg-benin-green/5 rounded-md pl-2' : 'text-gray-700 hover:text-benin-green'
@@ -83,11 +83,11 @@ export default {
       isMenuOpen: false,
       activeSection: 'hero',
       navigationItems: [
-        {name: 'Accueil', section: 'hero', icon: 'fa-home'},
-        {name: 'Culture', section: 'culture', icon: 'fa-landmark'},
-        {name: 'Nature', section: 'nature', icon: 'fa-leaf'},
-        {name: 'Cuisine', section: 'gastronomie', icon: 'fa-utensils'},
-        {name: 'Contact', section: 'contact', icon: 'fa-envelope'}
+        {name: 'Accueil', section: '/', icon: 'fa-home', link:true},
+        {name: 'Evernements', section: '/evenements', icon: 'fa-calendar-alt', link:true},
+        {name: 'Hébergement', section: '/hebergement', icon: 'fa-bed', link:true},
+        {name: 'Blog', section: '/blog', icon: 'fa-blog', link:true},
+        {name: 'Contact', section: '/#contact', icon: 'fa-envelope',link:true}
       ]
     }
   },
@@ -107,11 +107,14 @@ export default {
       this.isMenuOpen = !this.isMenuOpen;
       console.log('Menu toggled:', this.isMenuOpen);
     },
-    navigateTo(section) {
-      this.activeSection = section;
+    navigateTo(item) {
+      if(item.link){
+        window.location.href = item.section;
+      }else{
+        this.activeSection = item.section;
       this.isMenuOpen = false;
       
-      const targetElement = document.getElementById(section);
+      const targetElement = document.getElementById(item.section);
       if (targetElement) {
         window.scrollTo({
           top: targetElement.offsetTop - 80,
@@ -119,7 +122,9 @@ export default {
         });
       }
       
-      this.$emit('navigate-to', section);
+      this.$emit('navigate-to', item.section);
+      }
+      
     },
     openJourneyMapAndCloseMenu() {
       this.isMenuOpen = false;

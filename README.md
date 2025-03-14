@@ -75,7 +75,7 @@ npm run dev
 yarn dev
 ```
 
-4. Ouvrez votre navigateur à l'adresse : `http://localhost:3000`
+4. Ouvrez votre navigateur à l'adresse : `http://localhost:4321`
 
 ### Build pour la production
 
