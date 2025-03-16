@@ -87,6 +87,7 @@ watch(itemsPerPage, () => {
   // Ajuster la page courante si nécessaire
   if (currentPage.value > totalPages.value) {
     currentPage.value = totalPages.value || 1;
+    
   }
 });
 
@@ -102,7 +103,14 @@ function goToPage(page: number): void {
   if (page >= 1 && page <= totalPages.value) {
     currentPage.value = page;
     // Remonter en haut de la liste
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const blogListElement = document.getElementById('blog-list');
+    if (blogListElement) {
+      const yOffset = -100; // 100px de plus vers le haut
+      const y = blogListElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 }
 
@@ -129,7 +137,7 @@ function formatDate(date: Date): string {
 </script>
 
 <template>
-  <div>
+  <div id="blog-list">
     <!-- En-tête avec options de vue et barre de recherche -->
     <div class="flex flex-col mb-8 space-y-4 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between">
       <h2 class="text-2xl font-bold text-gray-900">Articles récents</h2>
@@ -262,7 +270,7 @@ function formatDate(date: Date): string {
                 <img 
                   :src="article.author.avatar" 
                   :alt="article.author.name"
-                  class="w-8 h-8 mr-3 rounded-full"
+                  class="w-8 h-8 mr-3 rounded-full hidden"
                 >
                 <div class="text-sm">
                   <div class="font-medium text-gray-900">{{ article.author.name }}</div>

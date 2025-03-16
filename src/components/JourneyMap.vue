@@ -1,4 +1,5 @@
 <template>
+ 
   <transition 
     enter-active-class="transition-opacity duration-500" 
     enter-from-class="opacity-0" 
@@ -7,7 +8,7 @@
     leave-from-class="opacity-100" 
     leave-to-class="opacity-0">
     
-    <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center">
+    <div v-if="$isMapOpen" class="fixed inset-0 z-50 flex items-center justify-center" id="journey-map">
       <!-- Arrière-plan avec flou -->
       <div class="absolute inset-0 bg-night/95 backdrop-filter backdrop-blur-md"></div>
       
@@ -28,7 +29,7 @@
           </div>
           
           <button 
-            @click="$emit('close')" 
+            @click="isMapOpen.set(false)" 
             class="flex items-center justify-center w-10 h-10 text-white transition-colors rounded-full hover:bg-white/10"
             aria-label="Fermer la carte">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -375,169 +376,196 @@
       </div>
     </div>
   </transition>
+
 </template>
 
-<script>
-export default {
-  name: 'JourneyMap',
-  props: {
-    show: {
-      type: Boolean,
-      default: false
-    }
-  },
-  emits: ['close', 'navigate-to'],
-  data() {
-    return {
-      activeLocation: null,
-      hoverLocation: null,
-      parallaxOffset: { x: 0, y: 0 },
-      // Information sur les lieux touristiques
-      locations: {
-        cotonou: { name: 'Cotonou', section: 'culture' },
-        ouidah: { name: 'Ouidah', section: 'culture' },
-        ganvie: { name: 'Ganvié', section: 'nature' },
-        abomey: { name: 'Abomey', section: 'culture' },
-        natitingou: { name: 'Natitingou', section: 'nature' },
-        pendjari: { name: 'Parc de la Pendjari', section: 'nature' }
-      }
-    }
-  },
-  mounted() {
-    document.body.classList.add('overflow-hidden');
-    this.initParticleAnimations();
-    
-    // Animation d'entrée de la carte
-    if (window.gsap) {
-      this.animateMapElements();
-    }
-    
-    // Fermer les popups quand on clique en dehors
-    document.addEventListener('click', this.handleOutsideClick);
-  },
-  beforeUnmount() {
-    document.body.classList.remove('overflow-hidden');
-    document.removeEventListener('click', this.handleOutsideClick);
-  },
-  methods: {
-    handleOutsideClick(event) {
-      // Si on clique en dehors d'une popup de lieu, fermer la popup
-      if (this.activeLocation && !event.target.closest('.location-info') && !event.target.closest('.location-marker')) {
-        this.activeLocation = null;
-      }
-    },
-    
-    initParticleAnimations() {
-      // Animer les particules avec GSAP si disponible
-      if (window.gsap) {
-        document.querySelectorAll('.map-particle').forEach((particle, index) => {
-          const delay = index * 0.5;
-          const duration = 15 + Math.random() * 20;
-          
-          gsap.to(particle, {
-            x: `random(-100, 100)`,
-            y: `random(-100, 100)`,
-            opacity: `random(0.1, 0.4)`,
-            scale: `random(0.8, 1.8)`,
-            rotation: `random(-180, 180)`,
-            duration: duration,
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut",
-            delay: delay
-          });
-        });
-      }
-    },
-    
-    animateMapElements() {
-      // Animation d'entrée des éléments de la carte
-      const tl = gsap.timeline();
-      
-      // Animer les marqueurs de lieu
-      tl.from('.location-marker', {
-        y: 20,
-        opacity: 0,
-        stagger: 0.1,
-        duration: 0.6,
-        ease: 'back.out(1.7)'
-      });
-      
-      // Animer les routes
-      tl.from('.map-route', {
-        drawSVG: "0%",
-        duration: 1.5,
-        stagger: 0.2,
-        ease: 'power2.inOut'
-      }, "-=0.5");
-    },
-    
-    handleMapParallax(e) {
-      if (!this.$refs.mapContainer || !this.$refs.mapBg) return;
-      
-      const container = this.$refs.mapContainer;
-      const rect = container.getBoundingClientRect();
-      
-      // Calculer la position relative du curseur par rapport au centre
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-      
-      // Calculer le décalage pour l'effet parallaxe (mouvement inverse du curseur)
-      this.parallaxOffset.x = (centerX - mouseX) / 30; // Diviser pour réduire l'amplitude
-      this.parallaxOffset.y = (centerY - mouseY) / 30;
-      
-      // Appliquer la transformation avec une transition douce
-      this.$refs.mapBg.style.transform = `translate(${this.parallaxOffset.x}px, ${this.parallaxOffset.y}px)`;
-    },
-    
-    startJourney() {
-      this.$emit('navigate-to', 'hero');
-      this.$emit('close');
-    },
-    
-    selectItinerary() {
-      // Afficher l'itinéraire complet en surbrillance (pourrait être développé davantage)
-      this.showItineraryAnimation();
-      setTimeout(() => {
-        this.$emit('navigate-to', 'culture');
-        this.$emit('close');
-      }, 1500);
-    },
-    
-    showItineraryAnimation() {
-      // Animation pour montrer l'itinéraire complet
-      if (window.gsap) {
-        gsap.to('.map-route', {
-          stroke: '#FCD116',
-          strokeWidth: 1.5,
-          duration: 0.5,
-          stagger: 0.1,
-          repeat: 1,
-          yoyo: true
-        });
-        
-        const locations = document.querySelectorAll('.location-marker');
-        gsap.to(locations, {
-          scale: 1.5,
-          duration: 0.3,
-          stagger: 0.1,
-          repeat: 1,
-          yoyo: true
-        });
-      }
-    },
-    
-    navigateToLocation(locationId) {
-      const location = this.locations[locationId];
-      if (location) {
-        this.$emit('navigate-to', location.section);
-        this.$emit('close');
-      }
-    }
-  }
+<script setup lang="ts">
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
+import { isMapOpen } from '../stores/mapStore';
+import { useStore } from '@nanostores/vue';
+const $isMapOpen = useStore(isMapOpen);
+
+interface Location {
+  name: string;
+  section: string;
 }
+
+interface Locations {
+  [key: string]: Location;
+}
+
+interface ParallaxOffset {
+  x: number;
+  y: number;
+}
+
+const emit = defineEmits<{
+  (e: 'navigate-to', section: string): void;
+}>();
+
+const activeLocation = ref<string | null>(null);
+const hoverLocation = ref<string | null>(null);
+const parallaxOffset = ref<ParallaxOffset>({ x: 0, y: 0 });
+const mapContainer = ref<HTMLElement | null>(null);
+const mapBg = ref<HTMLElement | null>(null);
+
+// Information sur les lieux touristiques
+const locations: Locations = {
+  cotonou: { name: 'Cotonou', section: 'culture' },
+  ouidah: { name: 'Ouidah', section: 'culture' },
+  ganvie: { name: 'Ganvié', section: 'nature' },
+  abomey: { name: 'Abomey', section: 'culture' },
+  natitingou: { name: 'Natitingou', section: 'nature' },
+  pendjari: { name: 'Parc de la Pendjari', section: 'nature' }
+};
+
+// Gérer la classe overflow-hidden conditionnellement
+watch($isMapOpen, (newValue) => {
+  if (newValue) {
+    document.body.classList.add('overflow-hidden');
+  } else {
+    document.body.classList.remove('overflow-hidden');
+  }
+});
+
+onMounted(() => {
+  // Ne pas ajouter overflow-hidden lors du montage, 
+  // seulement quand la carte est ouverte (via le watcher)
+  initParticleAnimations();
+  
+  // Animation d'entrée de la carte
+  if (window.gsap) {
+    animateMapElements();
+  }
+  
+  // Fermer les popups quand on clique en dehors
+  document.addEventListener('click', handleOutsideClick);
+});
+
+onBeforeUnmount(() => {
+  // S'assurer que la classe est retirée
+  document.body.classList.remove('overflow-hidden');
+  document.removeEventListener('click', handleOutsideClick);
+});
+
+const handleOutsideClick = (event: MouseEvent): void => {
+  // Si on clique en dehors d'une popup de lieu, fermer la popup
+  if (activeLocation.value && 
+      !((event.target as HTMLElement).closest('.location-info')) && 
+      !((event.target as HTMLElement).closest('.location-marker'))) {
+    activeLocation.value = null;
+  }
+};
+
+const initParticleAnimations = (): void => {
+  // Animer les particules avec GSAP si disponible
+  if (window.gsap) {
+    document.querySelectorAll('.map-particle').forEach((particle, index) => {
+      const delay = index * 0.5;
+      const duration = 15 + Math.random() * 20;
+      
+      gsap.to(particle, {
+        x: `random(-100, 100)`,
+        y: `random(-100, 100)`,
+        opacity: `random(0.1, 0.4)`,
+        scale: `random(0.8, 1.8)`,
+        rotation: `random(-180, 180)`,
+        duration: duration,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        delay: delay
+      });
+    });
+  }
+};
+
+const animateMapElements = (): void => {
+  // Animation d'entrée des éléments de la carte
+  const tl = gsap.timeline();
+  
+  // Animer les marqueurs de lieu
+  tl.from('.location-marker', {
+    y: 20,
+    opacity: 0,
+    stagger: 0.1,
+    duration: 0.6,
+    ease: 'back.out(1.7)'
+  });
+  
+  // Animer les routes
+  tl.from('.map-route', {
+    drawSVG: "0%",
+    duration: 1.5,
+    stagger: 0.2,
+    ease: 'power2.inOut'
+  }, "-=0.5");
+};
+
+const handleMapParallax = (e: MouseEvent): void => {
+  if (!mapContainer.value || !mapBg.value) return;
+  
+  const container = mapContainer.value;
+  const rect = container.getBoundingClientRect();
+  
+  // Calculer la position relative du curseur par rapport au centre
+  const centerX = rect.width / 2;
+  const centerY = rect.height / 2;
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
+  
+  // Calculer le décalage pour l'effet parallaxe (mouvement inverse du curseur)
+  parallaxOffset.value.x = (centerX - mouseX) / 30; // Diviser pour réduire l'amplitude
+  parallaxOffset.value.y = (centerY - mouseY) / 30;
+  
+  // Appliquer la transformation avec une transition douce
+  mapBg.value.style.transform = `translate(${parallaxOffset.value.x}px, ${parallaxOffset.value.y}px)`;
+};
+
+const startJourney = (): void => {
+  emit('navigate-to', 'hero');
+  isMapOpen.set(false);
+};
+
+const selectItinerary = (): void => {
+  // Afficher l'itinéraire complet en surbrillance
+  showItineraryAnimation();
+  setTimeout(() => {
+    emit('navigate-to', 'culture');
+    isMapOpen.set(false);
+  }, 1500);
+};
+
+const showItineraryAnimation = (): void => {
+  // Animation pour montrer l'itinéraire complet
+  if (window.gsap) {
+    gsap.to('.map-route', {
+      stroke: '#FCD116',
+      strokeWidth: 1.5,
+      duration: 0.5,
+      stagger: 0.1,
+      repeat: 1,
+      yoyo: true
+    });
+    
+    const locationElements = document.querySelectorAll('.location-marker');
+    gsap.to(locationElements, {
+      scale: 1.5,
+      duration: 0.3,
+      stagger: 0.1,
+      repeat: 1,
+      yoyo: true
+    });
+  }
+};
+
+const navigateToLocation = (locationId: string): void => {
+  const location = locations[locationId];
+  if (location) {
+    emit('navigate-to', location.section);
+    isMapOpen.set(false);
+  }
+};
 </script>
 
 <style scoped>

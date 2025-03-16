@@ -1,466 +1,546 @@
 <template>
-    <div class="p-6 mb-8 bg-white shadow-lg events-calendar-container rounded-xl">
-      <!-- Navigation du calendrier -->
-      <div class="flex items-center justify-between mb-6">
-        <h3 class="text-xl font-semibold text-gray-800">
-          Calendrier des <span class="text-benin-green">événements</span>
-        </h3>
+  <div class="calendar-container">
+    <!-- Contrôles de navigation du calendrier -->
+    <div class="flex items-center justify-between mb-8">
+      <div class="flex items-center gap-2">
+        <button 
+          @click="changeMonth('prev')"
+          class="flex items-center justify-center w-10 h-10 transition-colors duration-300 border rounded-full text-benin-green border-benin-green/20 hover:bg-benin-green-50"
+        >
+          <i class="fas fa-chevron-left"></i>
+        </button>
         
-        <div class="flex items-center space-x-2">
-          <button 
-            @click="previousMonth" 
-            class="flex items-center justify-center w-10 h-10 text-gray-600 transition-colors duration-300 bg-white border rounded-lg border-gray-200 hover:bg-benin-green hover:text-white"
-            aria-label="Mois précédent"
-          >
-            <i class="fas fa-chevron-left"></i>
-          </button>
-          
-          <div class="px-4 font-medium text-gray-800 min-w-[140px] text-center">
-            {{ currentMonthName }} {{ currentYear }}
-          </div>
-          
-          <button 
-            @click="nextMonth" 
-            class="flex items-center justify-center w-10 h-10 text-gray-600 transition-colors duration-300 bg-white border rounded-lg border-gray-200 hover:bg-benin-green hover:text-white"
-            aria-label="Mois suivant"
-          >
-            <i class="fas fa-chevron-right"></i>
-          </button>
-          
-          <button 
-            @click="resetToToday" 
-            class="px-3 py-1 ml-2 text-sm font-medium transition-colors duration-300 border rounded-lg text-benin-green border-benin-green hover:bg-benin-green hover:text-white"
-            aria-label="Aujourd'hui"
-          >
-            Aujourd'hui
-          </button>
+        <h2 class="text-xl font-bold text-gray-800">
+          {{ formatMonth($currentMonth.month) }} {{ $currentMonth.year }}
+        </h2>
+        
+        <button 
+          @click="changeMonth('next')"
+          class="flex items-center justify-center w-10 h-10 transition-colors duration-300 border rounded-full text-benin-green border-benin-green/20 hover:bg-benin-green-50"
+        >
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        
+        <button 
+          @click="resetToToday"
+          class="px-3 py-1 ml-2 text-sm font-medium transition-colors duration-300 border rounded-md text-benin-green border-benin-green/20 hover:bg-benin-green-50"
+        >
+          Aujourd'hui
+        </button>
+      </div>
+      
+      <div class="flex items-center gap-2">
+        <button 
+          @click="toggleEventList"
+          class="flex items-center gap-2 px-3 py-2 text-sm font-medium transition-colors duration-300 border rounded-md text-benin-green border-benin-green/20 hover:bg-benin-green-50"
+        >
+          <span v-if="showEventList">
+            <i class="mr-1 fas fa-eye-slash"></i>
+            Masquer les événements
+          </span>
+          <span v-else>
+            <i class="mr-1 fas fa-eye"></i>
+            Voir tous les événements
+          </span>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Calendrier -->
+    <div class="overflow-hidden bg-white rounded-xl shadow-sm">
+      <!-- Jours de la semaine -->
+      <div class="grid grid-cols-7 gap-px bg-gray-200">
+        <div 
+          v-for="day in weekDays" 
+          :key="day"
+          class="px-2 py-3 font-medium text-center text-gray-700 bg-white"
+        >
+          {{ day }}
         </div>
       </div>
       
       <!-- Grille du calendrier -->
-      <div class="mb-6">
-        <!-- Jours de la semaine -->
-        <div class="grid grid-cols-7 gap-1 mb-2">
-          <div 
-            v-for="day in weekDays" 
-            :key="day"
-            class="py-2 text-sm font-medium text-center text-gray-500"
-          >
-            {{ day }}
-          </div>
-        </div>
-        
+      <div class="grid grid-cols-7 gap-px bg-gray-200">
         <!-- Jours du mois -->
-        <div class="grid grid-cols-7 gap-1">
-          <div 
-            v-for="(day, index) in calendarDays" 
-            :key="index"
-            class="relative flex flex-col items-center justify-center transition-all duration-300 bg-white border rounded-lg cursor-pointer aspect-square border-gray-100 hover:border-benin-green"
-            :class="[
-              day.isCurrentMonth ? 'hover:bg-benin-green-50' : 'bg-gray-50',
-              day.date === selectedDate ? 'bg-benin-green-50 border-benin-green' : '',
-              day.isToday ? 'ring-2 ring-benin-green ring-opacity-50' : '',
-              day.events.length > 0 && day.isCurrentMonth ? 'font-medium' : ''
-            ]"
-            @click="selectDate(day.date)"
-          >
-            <!-- Numéro du jour -->
-            <span :class="[
-              day.isCurrentMonth ? 'text-gray-800' : 'text-gray-400',
-              day.date === selectedDate ? 'text-benin-green' : ''
-            ]">
-              {{ new Date(day.date).getDate() }}
-            </span>
-            
-            <!-- Indicateurs d'événements -->
-            <div v-if="day.events.length > 0 && day.isCurrentMonth" class="flex mt-1 space-x-1">
-              <div 
-                v-for="(event, i) in day.events.slice(0, 3)" 
-                :key="i"
-                class="w-1.5 h-1.5 rounded-full"
-                :class="getCategoryDotClass(event.category)"
-              ></div>
-              <div 
-                v-if="day.events.length > 3" 
-                class="w-1.5 h-1.5 rounded-full bg-benin-green-300"
-              ></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Événements du jour sélectionné -->
-      <div>
-        <transition-group 
-          name="event-fade" 
-          tag="div" 
-          class="space-y-3"
+        <div 
+          v-for="day in calendarDays" 
+          :key="`${day.date}`"
+          :class="[
+            'relative min-h-32 p-2 bg-white calendar-day',
+            day.isCurrentMonth ? 'text-gray-900' : 'text-gray-400 bg-gray-50',
+            day.isToday ? 'calendar-day-today' : '',
+            day.isWeekend ? 'bg-gray-50/70' : '',
+            day.events && day.events.length > 0 ? 'has-events' : ''
+          ]"
         >
-          <div v-if="selectedDateEvents.length === 0" key="no-events" class="py-8 text-center">
-            <div class="flex items-center justify-center w-16 h-16 mx-auto mb-3 text-gray-400">
-              <i class="text-3xl fas fa-calendar-day"></i>
-            </div>
-            <h4 class="mb-2 text-lg font-medium text-gray-800">Aucun événement</h4>
-            <p class="text-sm text-gray-500">
-              Aucun événement prévu pour le {{ formatSelectedDate }}.
-            </p>
+          <!-- Numéro du jour -->
+          <div 
+            :class="[
+              'inline-flex items-center justify-center w-8 h-8 text-base font-medium rounded-full transition-colors duration-300',
+              day.isToday ? 'bg-benin-green text-white' : '',
+              day.isCurrentMonth && !day.isToday ? 'hover:bg-benin-green-50 hover:text-benin-green' : ''
+            ]"
+          >
+            {{ new Date(day.date).getDate() }}
           </div>
           
+          <!-- Événements du jour -->
           <div 
-            v-for="event in selectedDateEvents" 
-            :key="event.id"
-            class="flex items-start p-4 transition-colors duration-300 bg-white border rounded-lg border-gray-100 hover:border-benin-green hover:bg-benin-green-50"
+            v-if="day.events && day.events.length > 0" 
+            class="mt-1 space-y-1 calendar-events"
           >
-            <!-- Image miniature -->
-            <div class="flex-shrink-0 w-16 h-16 mr-4 overflow-hidden rounded-lg">
-              <img :src="event.image" :alt="event.title" class="object-cover w-full h-full">
-            </div>
-            
-            <!-- Détails de l'événement -->
-            <div class="flex-grow">
-              <div 
-                class="inline-block px-2 py-0.5 text-xs font-medium rounded-full"
-                :class="getCategoryClass(event.category)"
-              >
-                {{ event.category }}
-              </div>
-              
-              <h4 class="mb-1 font-semibold text-gray-800">{{ event.title }}</h4>
-              
-              <div class="flex items-center text-xs text-gray-500">
-                <i class="mr-1 text-benin-green fas fa-map-marker-alt"></i>
-                <span>{{ event.location }}</span>
-                <span class="mx-2">•</span>
-                <i class="mr-1 text-benin-green fas fa-clock"></i>
-                <span>{{ event.time || 'Toute la journée' }}</span>
+            <div 
+              v-for="(event, index) in day.events.slice(0, maxEventsPerDay)" 
+              :key="`${day.date}-${event.id}`"
+              @click="openEventDetails(event)"
+              :class="[
+                'p-1 overflow-hidden text-xs font-medium rounded cursor-pointer calendar-event',
+                getCategoryClass(event.category),
+                'transform transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-sm'
+              ]"
+            >
+              <div class="flex items-center">
+                <div 
+                  class="flex-shrink-0 w-2 h-2 mr-1 rounded-full"
+              :class="getCategoryDotClass(event.category)"
+            ></div>
+                <div class="truncate">{{ event.title }}</div>
               </div>
             </div>
             
-            <!-- Bouton d'action -->
-            <button class="mt-1 ml-2 transition-colors duration-300 text-benin-green hover:text-benin-green-600">
-              <i class="fas fa-arrow-right"></i>
-            </button>
+            <!-- Indicateur "plus d'événements" -->
+            <div 
+              v-if="day.events.length > maxEventsPerDay"
+              @click="openDayEvents(day)"
+              class="flex items-center justify-center p-1 text-xs font-medium text-gray-600 transition-colors duration-300 rounded cursor-pointer hover:bg-benin-green-50 hover:text-benin-green"
+            >
+              +{{ day.events.length - maxEventsPerDay }} autres
+            </div>
           </div>
-        </transition-group>
+        </div>
       </div>
     </div>
-  </template>
+    
+    <!-- Liste d'événements du mois (optionnelle) -->
+    <div 
+      v-if="showEventList && eventsInCurrentMonth.length > 0"
+      class="p-4 mt-6 bg-white rounded-xl shadow-sm"
+    >
+      <h3 class="mb-4 text-lg font-semibold text-gray-800">
+        Événements en {{ formatMonth($currentMonth.month) }}
+      </h3>
+      
+      <div class="space-y-3">
+        <div 
+          v-for="event in eventsInCurrentMonth" 
+          :key="event.id"
+          @click="openEventDetails(event)"
+          class="flex items-start p-3 transition-all duration-300 border border-gray-100 rounded-lg cursor-pointer hover:border-benin-green/30 hover:bg-benin-green-50/30"
+        >
+          <div class="flex items-center justify-center flex-shrink-0 w-10 h-10 mr-3 rounded bg-benin-green/10">
+            <i 
+              class="text-benin-green fas"
+              :class="getCategoryIcon(event.category)"
+            ></i>
+          </div>
+          
+          <div class="flex-1 min-w-0">
+            <div class="flex flex-wrap items-baseline justify-between gap-2">
+              <h4 class="font-medium text-gray-800">{{ event.title }}</h4>
+            <div 
+                class="px-2 py-0.5 text-xs font-medium rounded-full"
+              :class="getCategoryClass(event.category)"
+            >
+              {{ event.category }}
+              </div>
+            </div>
+            
+            <div class="flex flex-wrap mt-1 text-sm text-gray-600 gap-x-4">
+              <div class="flex items-center">
+                <i class="mr-1 fas fa-calendar-day text-benin-green-500"></i>
+                <span>{{ formatDate(event.date) }}</span>
+                <span v-if="event.endDate && event.endDate !== event.date">
+                  &nbsp;-&nbsp;{{ formatDate(event.endDate) }}
+                </span>
+              </div>
+              
+              <div class="flex items-center">
+                <i class="mr-1 fas fa-map-marker-alt text-benin-green-500"></i>
+                <span>{{ event.location }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Modal détails d'événement -->
+    <div 
+      v-if="selectedEvent"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      @click.self="closeEventDetails"
+    >
+      <div 
+        class="max-w-2xl p-6 mx-4 bg-white rounded-xl shadow-xl"
+        style="max-height: 90vh; overflow-y: auto;"
+      >
+        <div class="flex items-start justify-between mb-4">
+          <h3 class="text-xl font-bold text-benin-green">{{ selectedEvent.title }}</h3>
+          <button 
+            @click="closeEventDetails"
+            class="text-gray-500 transition-colors hover:text-benin-green"
+          >
+            <i class="text-xl fas fa-times"></i>
+          </button>
+        </div>
+        
+        <div class="mb-4">
+          <div class="flex flex-col gap-2 sm:flex-row sm:gap-6">
+            <div class="flex items-center text-gray-600">
+              <i class="mr-2 fas fa-calendar-day text-benin-green"></i>
+              <span>{{ formatDate(selectedEvent.date, true) }}</span>
+              <span v-if="selectedEvent.endDate && selectedEvent.endDate !== selectedEvent.date">
+                &nbsp;-&nbsp;{{ formatDate(selectedEvent.endDate, true) }}
+              </span>
+            </div>
+            
+            <div class="flex items-center text-gray-600">
+              <i class="mr-2 fas fa-map-marker-alt text-benin-green"></i>
+              <span>{{ selectedEvent.location }}</span>
+            </div>
+            
+            <div class="flex items-center text-gray-600">
+              <i class="mr-2 fas fa-tag text-benin-green"></i>
+              <span>{{ selectedEvent.category }}</span>
+            </div>
+          </div>
+        </div>
+        
+        <p class="mb-6 text-gray-700">{{ selectedEvent.description }}</p>
+        
+        <div class="flex justify-end gap-3 mt-6">
+          <button 
+            @click="closeEventDetails"
+            class="px-4 py-2 text-sm font-medium transition-colors duration-300 bg-gray-100 rounded-lg text-benin-green hover:bg-gray-200"
+          >
+            Fermer
+          </button>
+          
+          <a 
+            :href="`/evenements/${selectedEvent.id}`"
+            class="px-4 py-2 text-sm font-medium text-white transition-colors duration-300 rounded-lg bg-benin-green hover:bg-benin-green-600"
+          >
+            Voir la page complète
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Modal événements d'un jour -->
+    <div 
+      v-if="selectedDay && selectedDay.events && selectedDay.events.length > 0"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      @click.self="closeDayEvents"
+    >
+      <div 
+        class="w-full max-w-md p-6 mx-4 bg-white rounded-xl shadow-xl"
+        style="max-height: 90vh; overflow-y: auto;"
+      >
+        <div class="flex items-start justify-between mb-4">
+          <h3 class="text-xl font-bold text-benin-green">
+            Événements du {{ formatDate(selectedDay.date, true) }}
+          </h3>
+          <button 
+            @click="closeDayEvents"
+            class="text-gray-500 transition-colors hover:text-benin-green"
+          >
+            <i class="text-xl fas fa-times"></i>
+          </button>
+        </div>
+        
+        <div class="space-y-3">
+          <div 
+            v-for="event in selectedDay.events" 
+            :key="event.id"
+            @click="openEventDetails(event); closeDayEvents();"
+            class="flex items-start p-3 transition-all duration-300 border border-gray-100 rounded-lg cursor-pointer hover:border-benin-green/30 hover:bg-benin-green-50/30"
+          >
+            <div class="flex items-center justify-center flex-shrink-0 w-10 h-10 mr-3 rounded bg-benin-green/10">
+              <i 
+                class="text-benin-green fas"
+                :class="getCategoryIcon(event.category)"
+              ></i>
+            </div>
+            
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-baseline justify-between gap-2">
+                <h4 class="font-medium text-gray-800">{{ event.title }}</h4>
+                <div 
+                  class="px-2 py-0.5 text-xs font-medium rounded-full"
+                  :class="getCategoryClass(event.category)"
+                >
+                  {{ event.category }}
+                </div>
+              </div>
+              
+              <div class="mt-1 text-sm text-gray-600">
+                {{ event.description.substring(0, 80) }}{{ event.description.length > 80 ? '...' : '' }}
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="flex justify-end mt-6">
+          <button 
+            @click="closeDayEvents"
+            class="px-4 py-2 text-sm font-medium transition-colors duration-300 bg-gray-100 rounded-lg text-benin-green hover:bg-gray-200"
+          >
+            Fermer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, computed, onMounted, watch } from 'vue';
+import { useStore } from '@nanostores/vue';
+import { 
+  currentCalendarMonth, 
+  navigateMonth, 
+  resetToToday as resetMonth,
+  eventsByDate,
+  filteredEvents
+} from '../../stores/eventsStore';
+
+// État local
+const weekDays = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+const maxEventsPerDay = 3;
+const showEventList = ref(true);
+const selectedEvent = ref(null);
+const selectedDay = ref(null);
+
+// Connecter aux stores
+const $currentMonth = useStore(currentCalendarMonth);
+const $eventsByDate = useStore(eventsByDate);
+const $filteredEvents = useStore(filteredEvents);
+
+// Calcul des jours du calendrier
+const calendarDays = computed(() => {
+  const { month, year } = $currentMonth.value;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
   
-  <script>
-  export default {
-    name: 'EventsCalendar',
+  const firstDayOfMonth = new Date(year, month, 1);
+  const lastDayOfMonth = new Date(year, month + 1, 0);
+  
+  // Déterminer le premier jour à afficher (début de la semaine contenant le 1er du mois)
+  const startDay = new Date(firstDayOfMonth);
+  startDay.setDate(startDay.getDate() - startDay.getDay());
+  
+  // Déterminer le dernier jour à afficher (fin de la semaine contenant le dernier jour du mois)
+  const endDay = new Date(lastDayOfMonth);
+  const daysToAdd = 6 - endDay.getDay();
+  endDay.setDate(endDay.getDate() + daysToAdd);
+  
+  const days = [];
+  const currentDate = new Date(startDay);
+  
+  while (currentDate <= endDay) {
+    const dateString = currentDate.toISOString().split('T')[0]; // Format YYYY-MM-DD
+    const isWeekend = currentDate.getDay() === 0 || currentDate.getDay() === 6;
+    const isCurrentMonth = currentDate.getMonth() === month;
+    const isToday = currentDate.toDateString() === today.toDateString();
     
-    data() {
-      return {
-        // Jours de la semaine (commençant par lundi pour le format français)
-        weekDays: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
-        
-        // Date actuelle et sélectionnée
-        currentDate: new Date(),
-        selectedDate: new Date().toISOString().split('T')[0],
-        
-        // Mois et année actuels pour le calendrier
-        currentMonth: new Date().getMonth(),
-        currentYear: new Date().getFullYear(),
-        
-        // Liste des événements (à remplacer par des données API)
-        events: [
-          {
-            id: 1,
-            title: 'Festival International de Vodoun',
-            category: 'Festivals vodou',
-            location: 'Ouidah, Bénin',
-            date: '2026-01-10',
-            endDate: '2026-01-15', // Pour les événements sur plusieurs jours
-            time: '9:00 - 18:00',
-            description: 'Le plus grand festival vodoun au monde, avec des cérémonies spectaculaires et des rituels sacrés.',
-            image: '/img/events/vodoun-festival.jpg'
-          },
-          {
-            id: 2,
-            title: 'Fête de Gani',
-            category: 'Célébrations traditionnelles',
-            location: 'Nikki, Bénin',
-            date: '2026-03-15',
-            time: '10:00 - 22:00',
-            description: 'Une grande fête traditionnelle célébrée par le peuple Baatonu dans le nord du Bénin.',
-            image: '/img/events/gani-festival.jpg'
-          },
-          {
-            id: 3,
-            title: 'Festival des Arts du Bénin',
-            category: 'Arts & Culture',
-            location: 'Cotonou, Bénin',
-            date: '2026-04-05',
-            endDate: '2026-04-12',
-            time: 'Toute la journée',
-            description: 'Un événement culturel majeur qui célèbre les arts contemporains et traditionnels du Bénin.',
-            image: '/img/events/arts-festival.jpg'
-          },
-          {
-            id: 4,
-            title: 'Carnaval de Ouidah',
-            category: 'Festivals vodou',
-            location: 'Ouidah, Bénin',
-            date: '2026-02-20',
-            time: '11:00 - 23:00',
-            description: 'Un carnaval coloré qui célèbre le riche patrimoine culturel et historique de Ouidah.',
-            image: '/img/events/ouidah-carnival.jpg'
-          },
-          {
-            id: 5,
-            title: 'Festival Gastronomique Béninois',
-            category: 'Gastronomie',
-            location: 'Porto-Novo, Bénin',
-            date: '2026-05-08',
-            endDate: '2026-05-10',
-            time: '10:00 - 20:00',
-            description: 'Découvrez les saveurs authentiques de la cuisine béninoise lors de ce festival culinaire.',
-            image: '/img/events/food-festival.jpg'
-          },
-          {
-            id: 6,
-            title: 'Concert Angélique Kidjo',
-            category: 'Concerts & musique',
-            location: 'Cotonou, Bénin',
-            date: '2026-06-18',
-            time: '19:30 - 23:00',
-            description: 'La légendaire chanteuse béninoise Angélique Kidjo revient pour un concert exceptionnel.',
-            image: '/img/events/kidjo-concert.jpg'
-          },
-          {
-            id: 7,
-            title: 'Marché des Artisans',
-            category: 'Arts & Culture',
-            location: 'Abomey, Bénin',
-            date: '2026-01-25',
-            time: '9:00 - 17:00',
-            description: 'Un marché traditionnel où les artisans locaux présentent leurs créations uniques.',
-            image: '/img/events/artisan-market.jpg'
-          },
-          {
-            id: 8,
-            title: 'Festival de Musique Traditionnelle',
-            category: 'Concerts & musique',
-            location: 'Natitingou, Bénin',
-            date: '2026-02-15',
-            time: '16:00 - 23:00',
-            description: 'Un festival célébrant les musiques traditionnelles des différentes régions du Bénin.',
-            image: '/img/events/traditional-music.jpg'
-          }
-        ]
-      };
-    },
+    // Récupérer les événements pour ce jour
+    const dayEvents = $eventsByDate.value[currentDate.getDate()] || [];
     
-    computed: {
-      // Nom du mois actuel en français
-      currentMonthName() {
-        const months = [
-          'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
-          'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
-        ];
-        return months[this.currentMonth];
-      },
-      
-      // Jours à afficher dans le calendrier (42 jours pour couvrir 6 semaines)
-      calendarDays() {
-        const days = [];
-        const firstDayOfMonth = new Date(this.currentYear, this.currentMonth, 1);
-        const lastDayOfMonth = new Date(this.currentYear, this.currentMonth + 1, 0);
-        
-        // Jour de la semaine du premier jour du mois (0 = dimanche, 1 = lundi, etc.)
-        // Convertir pour que lundi soit le premier jour (1 -> 0, 2 -> 1, ..., 0 -> 6)
-        let firstWeekday = firstDayOfMonth.getDay() || 7;
-        firstWeekday = firstWeekday === 1 ? 0 : firstWeekday - 1;
-        
-        // Jours du mois précédent
-        const prevMonthLastDay = new Date(this.currentYear, this.currentMonth, 0).getDate();
-        for (let i = firstWeekday - 1; i >= 0; i--) {
-          const date = new Date(this.currentYear, this.currentMonth - 1, prevMonthLastDay - i);
-          const dateStr = date.toISOString().split('T')[0];
-          days.push({
-            date: dateStr,
-            isCurrentMonth: false,
-            isToday: this.isToday(dateStr),
-            events: this.getEventsForDate(dateStr)
-          });
-        }
-        
-        // Jours du mois courant
-        for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
-          const date = new Date(this.currentYear, this.currentMonth, i);
-          const dateStr = date.toISOString().split('T')[0];
-          days.push({
-            date: dateStr,
-            isCurrentMonth: true,
-            isToday: this.isToday(dateStr),
-            events: this.getEventsForDate(dateStr)
-          });
-        }
-        
-        // Jours du mois suivant (jusqu'à compléter 42 jours)
-        const remainingDays = 42 - days.length;
-        for (let i = 1; i <= remainingDays; i++) {
-          const date = new Date(this.currentYear, this.currentMonth + 1, i);
-          const dateStr = date.toISOString().split('T')[0];
-          days.push({
-            date: dateStr,
-            isCurrentMonth: false,
-            isToday: this.isToday(dateStr),
-            events: this.getEventsForDate(dateStr)
-          });
-        }
-        
-        return days;
-      },
-      
-      // Événements pour la date sélectionnée
-      selectedDateEvents() {
-        return this.getEventsForDate(this.selectedDate);
-      },
-      
-      // Format de la date sélectionnée
-      formatSelectedDate() {
-        if (!this.selectedDate) return '';
-        
-        const date = new Date(this.selectedDate);
-        const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-        return date.toLocaleDateString('fr-FR', options);
-      }
-    },
+    days.push({
+      date: dateString,
+      isWeekend,
+      isCurrentMonth,
+      isToday,
+      events: isCurrentMonth ? dayEvents : []
+    });
     
-    methods: {
-      // Navigation vers le mois précédent
-      previousMonth() {
-        if (this.currentMonth === 0) {
-          this.currentMonth = 11;
-          this.currentYear--;
-        } else {
-          this.currentMonth--;
-        }
-      },
-      
-      // Navigation vers le mois suivant
-      nextMonth() {
-        if (this.currentMonth === 11) {
-          this.currentMonth = 0;
-          this.currentYear++;
-        } else {
-          this.currentMonth++;
-        }
-      },
-      
-      // Retour au mois actuel
-      resetToToday() {
-        const today = new Date();
-        this.currentMonth = today.getMonth();
-        this.currentYear = today.getFullYear();
-        this.selectedDate = today.toISOString().split('T')[0];
-        
-        // Ajouter une animation de mise en évidence pour aujourd'hui
-        this.$nextTick(() => {
-          const todayCell = document.querySelector('.ring-benin-green');
-          if (todayCell) {
-            todayCell.classList.add('animate-pulse');
-            setTimeout(() => {
-              todayCell.classList.remove('animate-pulse');
-            }, 1000);
-          }
-        });
-      },
-      
-      // Sélectionner une date
-      selectDate(date) {
-        this.selectedDate = date;
-      },
-      
-      // Vérifier si une date est aujourd'hui
-      isToday(dateStr) {
-        const today = new Date().toISOString().split('T')[0];
-        return dateStr === today;
-      },
-      
-      // Obtenir les événements pour une date spécifique
-      getEventsForDate(dateStr) {
-        return this.events.filter(event => {
-          // Pour les événements d'une journée
-          if (event.date === dateStr) return true;
-          
-          // Pour les événements sur plusieurs jours
-          if (event.endDate) {
-            const date = new Date(dateStr);
-            const startDate = new Date(event.date);
-            const endDate = new Date(event.endDate);
-            return date >= startDate && date <= endDate;
-          }
-          
-          return false;
-        });
-      },
-      
-      // Classes de couleur pour les indicateurs d'événements
-      getCategoryDotClass(category) {
-        switch(category) {
-          case 'Festivals vodou':
-            return 'bg-benin-green';
-          case 'Célébrations traditionnelles':
-            return 'bg-benin-green-600';
-          case 'Concerts & musique':
-            return 'bg-benin-red';
-          case 'Gastronomie':
-            return 'bg-benin-green-300';
-          case 'Arts & Culture':
-            return 'bg-benin-green-700';
-          default:
-            return 'bg-gray-400';
-        }
-      },
-      
-      // Classes pour les badges de catégorie
-      getCategoryClass(category) {
-        switch(category) {
-          case 'Festivals vodou':
-            return 'bg-benin-green text-white';
-          case 'Célébrations traditionnelles':
-            return 'bg-benin-green-600 text-white';
-          case 'Concerts & musique':
-            return 'bg-benin-red text-white';
-          case 'Gastronomie':
-            return 'bg-benin-green-50 text-benin-green';
-          case 'Arts & Culture':
-            return 'bg-benin-green-700 text-white';
-          default:
-            return 'bg-gray-100 text-gray-800';
-        }
-      }
-    }
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  
+  return days;
+});
+
+// Événements du mois en cours
+const eventsInCurrentMonth = computed(() => {
+  const { month, year } = $currentMonth.value;
+  
+  return $filteredEvents.value.filter(event => {
+    const eventDate = new Date(event.date);
+    const eventEndDate = event.endDate ? new Date(event.endDate) : eventDate;
+    
+    // Vérifier si l'événement se déroule dans le mois courant
+    return (
+      (eventDate.getMonth() === month && eventDate.getFullYear() === year) ||
+      (eventEndDate.getMonth() === month && eventEndDate.getFullYear() === year) ||
+      (eventDate < new Date(year, month, 1) && eventEndDate > new Date(year, month + 1, 0))
+    );
+  }).sort((a, b) => new Date(a.date) - new Date(b.date));
+});
+
+// Méthodes
+const changeMonth = (direction) => {
+  navigateMonth(direction);
+};
+
+const resetToToday = () => {
+  resetMonth();
+};
+
+const toggleEventList = () => {
+  showEventList.value = !showEventList.value;
+};
+
+const openEventDetails = (event) => {
+  selectedEvent.value = event;
+};
+
+const closeEventDetails = () => {
+  selectedEvent.value = null;
+};
+
+const openDayEvents = (day) => {
+  selectedDay.value = day;
+};
+
+const closeDayEvents = () => {
+  selectedDay.value = null;
+};
+
+// Formatage
+const formatMonth = (monthIndex) => {
+  const date = new Date();
+  date.setMonth(monthIndex);
+  return date.toLocaleDateString('fr-FR', { month: 'long' });
+};
+
+const formatDate = (dateString, withYear = false) => {
+  if (!dateString) return '';
+  
+  return new Date(dateString).toLocaleDateString('fr-FR', {
+    day: 'numeric',
+    month: 'long',
+    ...(withYear && { year: 'numeric' })
+  });
+};
+
+// Classes pour les catégories
+const getCategoryClass = (category) => {
+  const classes = {
+    'culturel': 'bg-vodou/10 text-vodou',
+    'arts': 'bg-benin-green/10 text-benin-green',
+    'musique': 'bg-ocean/10 text-ocean',
+    'divertissement': 'bg-benin-yellow/10 text-benin-yellow-700',
+    'gastronomie': 'bg-earth/10 text-earth',
+    'sport': 'bg-fire/10 text-fire',
+    'technologie': 'bg-night/10 text-night'
   };
-  </script>
   
-  <style scoped>
-  /* Transitions pour les événements */
-  .event-fade-enter-active, .event-fade-leave-active {
-    transition: all 0.3s ease;
-  }
+  return classes[category.toLowerCase()] || 'bg-gray-100 text-gray-700';
+};
+
+const getCategoryDotClass = (category) => {
+  const classes = {
+    'culturel': 'bg-vodou',
+    'arts': 'bg-benin-green',
+    'musique': 'bg-ocean',
+    'divertissement': 'bg-benin-yellow',
+    'gastronomie': 'bg-earth',
+    'sport': 'bg-fire',
+    'technologie': 'bg-night'
+  };
   
-  .event-fade-enter-from, .event-fade-leave-to {
-    opacity: 0;
-    transform: translateY(10px);
-  }
+  return classes[category.toLowerCase()] || 'bg-gray-700';
+};
+
+const getCategoryIcon = (category) => {
+  const icons = {
+    'culturel': 'fa-drum',
+    'arts': 'fa-palette',
+    'musique': 'fa-music',
+    'divertissement': 'fa-theater-masks',
+    'gastronomie': 'fa-utensils',
+    'sport': 'fa-running',
+    'technologie': 'fa-laptop-code'
+  };
   
-  /* Animation pulse pour mettre en évidence aujourd'hui */
-  @keyframes pulse {
-    0%, 100% {
-      transform: scale(1);
-      opacity: 1;
-    }
-    50% {
-      transform: scale(1.05);
-      opacity: 0.8;
-    }
+  return icons[category.toLowerCase()] || 'fa-calendar-day';
+};
+
+// Animation initiale
+onMounted(() => {
+  if (window.gsap) {
+    gsap.from('.calendar-container', {
+      y: 30,
+      opacity: 0,
+      duration: 0.8,
+      ease: 'power3.out'
+    });
   }
-  
-  .animate-pulse {
-    animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+});
+
+// Observer les changements de mois pour animer les jours
+watch(() => $currentMonth.value, () => {
+  if (window.gsap) {
+    gsap.from('.calendar-day', {
+      scale: 0.95,
+      opacity: 0,
+      duration: 0.4,
+      stagger: {
+        from: 'start',
+        grid: [7, 6],
+        amount: 0.3
+      },
+      ease: 'power2.out'
+    });
   }
-  </style>
+}, { deep: true });
+</script>
+
+<style scoped>
+.calendar-day {
+  transition: all 0.3s ease;
+}
+
+.calendar-day:hover {
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.2) inset;
+}
+
+.calendar-day-today {
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.2) inset;
+  background-color: rgba(13, 148, 136, 0.02);
+}
+
+.calendar-event {
+  transition: all 0.2s ease;
+}
+
+.calendar-event:hover {
+  filter: brightness(1.05);
+}
+
+.has-events {
+  position: relative;
+}
+
+.has-events::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 8px 8px 0;
+  border-color: transparent rgba(13, 148, 136, 0.5) transparent transparent;
+}
+</style>

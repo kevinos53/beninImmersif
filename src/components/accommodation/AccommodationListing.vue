@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="accommodation">
     <!-- État de chargement -->
     <div v-if="isLoading" class="py-10 text-center">
       <div class="relative inline-flex items-center justify-center">
@@ -191,7 +191,7 @@
             
             <div class="mt-auto flex items-center" :class="viewMode === 'list' ? 'justify-between' : ''">
               <a
-                href="#"
+                href="hebergement/royal-palm-hotel-spa"
                 class="inline-flex items-center text-benin-green hover:text-benin-green-600 font-medium text-sm transition-colors duration-300"
               >
                 Voir les détails
@@ -331,12 +331,12 @@ export default {
     // Appliquer un tri et réinitialiser le scroll
     const sortAccommodations = () => {
       // Une réinitialisation de la page pourrait être ajoutée ici si nécessaire
-      setTimeout(() => {
-        window.scrollTo({
-          top: document.getElementById('results-section').offsetTop - 100,
-          behavior: 'smooth'
-        });
-      }, 100);
+      // setTimeout(() => {
+      //   window.scrollTo({
+      //     top: document.getElementById('results-section').offsetTop - 100,
+      //     behavior: 'smooth'
+      //   });
+      // }, 100);
     };
     
     // Toggle un hébergement dans les favoris
@@ -407,12 +407,15 @@ export default {
     
     // Défilement vers le haut lors du changement de page
     const scrollToTop = () => {
-      setTimeout(() => {
-        window.scrollTo({
-          top: document.getElementById('results-section').offsetTop - 100,
-          behavior: 'smooth'
-        });
-      }, 100);
+      const accommodationListElement = document.getElementById('accommodation');
+    if (accommodationListElement) {
+      const yOffset = -100; // 100px de plus vers le haut
+      const y = accommodationListElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+      
     };
     
     // Classes pour les types d'hébergements

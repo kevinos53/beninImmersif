@@ -1,0 +1,635 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getAllEvents } from '../../data/eventsData';
+import EventNotFound from '../../components/events/EventNotFound.vue';
+import ShareButtons from '../../components/events/ShareButtons.vue';
+import EventRegistration from '../../components/events/EventRegistration.vue';
+import SimilarEvents from '../../components/events/SimilarEvents.vue';
+
+// Fonction pour formater les dates
+function formatDateLong(dateString: string): string {
+  return new Date(dateString).toLocaleDateString('fr-FR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+}
+
+// Déterminer les classes CSS selon la catégorie
+function getCategoryClass(category: string): string {
+  if (!category) return 'bg-gray-800 text-white';
+  
+  const classes: Record<string, string> = {
+    'culturel': 'bg-vodou text-white',
+    'arts': 'bg-benin-green text-white',
+    'musique': 'bg-ocean text-white',
+    'divertissement': 'bg-benin-yellow text-night',
+    'gastronomie': 'bg-earth text-white',
+    'sport': 'bg-fire text-white',
+    'technologie': 'bg-night text-white'
+  };
+  
+  return classes[category.toLowerCase()] || 'bg-gray-800 text-white';
+}
+
+// Formater le prix
+function formatPrice(price: any): string {
+  if (!price) return 'Gratuit';
+  
+  if ('isFree' in price && price.isFree) {
+    return 'Gratuit';
+  }
+  
+  if ('value' in price) {
+    if (price.formatted) return price.formatted;
+    
+    if (typeof price.value === 'number') {
+      return new Intl.NumberFormat('fr-FR', { 
+        style: 'currency', 
+        currency: price.currency || 'XOF',
+        maximumFractionDigits: 0
+      }).format(price.value);
+    }
+    
+    return `${price.value} ${price.currency || ''}`;
+  }
+  
+  return price === 0 || price === '0'
+    ? 'Gratuit' 
+    : new Intl.NumberFormat('fr-FR', {
+        style: 'currency',
+        currency: 'XOF',
+        maximumFractionDigits: 0
+      }).format(Number(price));
+}
+
+// Fonction getStaticPaths requise pour les routes dynamiques dans Astro
+export async function getStaticPaths() {
+  const events = await getAllEvents();
+  
+  return events.map(event => ({
+    params: { id: event.id.toString() },
+    props: { event }
+  }));
+}
+
+// Récupération de l'événement depuis les props
+const { event } = Astro.props;
+
+// Récupération de tous les événements pour les suggestions
+const events = await getAllEvents();
+
+// Extraire les événements associés (même catégorie) pour les suggestions
+const relatedEvents = event
+  ? events
+      .filter(e => e.id !== event.id && e.category === event.category)
+      .slice(0, 3)
+  : [];
+---
+
+<Layout 
+  title={event ? `${event.title} - Événements au Bénin` : 'Événement non trouvé'}
+  description={event ? event.description?.substring(0, 160) + '...' : 'Cet événement n\'est pas disponible'}
+  
+>
+  {!event ? (
+    <EventNotFound client:visible />
+  ) : (
+    <main class="event-detail">
+      <!-- Hero section avec image de fond et effet parallaxe -->
+      <div class="relative overflow-hidden min-h-[70vh]">
+        <div class="absolute inset-0 parallax-bg">
+          <img 
+            src={event.image} 
+            alt={event.title}
+            class="absolute inset-0 object-cover w-full h-full scale-110"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
+          <div class="absolute inset-0 bg-pattern opacity-20"></div>
+        </div>
+        
+        <div class="container relative z-10 flex flex-col justify-end h-full px-4 py-16 mx-auto md:px-8">
+          <!-- Fil d'Ariane -->
+          <div class="mb-6 breadcrumb">
+            <a href="/" class="text-benin-yellow/80 hover:text-benin-yellow">Accueil</a>
+            <span class="mx-2 text-white/60">/</span>
+            <a href="/evenements" class="text-benin-yellow/80 hover:text-benin-yellow">Événements</a>
+            <span class="mx-2 text-white/60">/</span>
+            <span class="text-white">{event.title}</span>
+          </div>
+          
+          <!-- Badge catégorie avec effet de brillance -->
+          <div 
+            class={`inline-flex items-center px-3 py-1 mb-4 text-sm font-medium rounded-full w-fit shimmer-badge ${getCategoryClass(event.category)}`}
+          >
+            {event.category}
+          </div>
+          
+          <h1 class="mb-4 text-4xl font-bold text-white md:text-5xl lg:text-6xl event-title">
+            {event.title}
+          </h1>
+          
+          <!-- Informations principales avec icônes améliorées -->
+          <div class="flex flex-wrap gap-6 mt-4 text-white event-meta">
+            <div class="flex items-center gap-2 event-date">
+              <div class="p-2 rounded-full bg-benin-yellow/20">
+                <i class="text-benin-yellow fas fa-calendar-day"></i>
+              </div>
+              <span>{formatDateLong(event.date)}</span>
+              {event.endDate && event.endDate !== event.date && (
+                <span>&nbsp;-&nbsp;{formatDateLong(event.endDate)}</span>
+              )}
+            </div>
+            
+            <div class="flex items-center gap-2 event-location">
+              <div class="p-2 rounded-full bg-benin-yellow/20">
+                <i class="text-benin-yellow fas fa-map-marker-alt"></i>
+              </div>
+              <span>{event.location}</span>
+            </div>
+            
+            <div class="flex items-center gap-2 event-price">
+              <div class="p-2 rounded-full bg-benin-yellow/20">
+                <i class="text-benin-yellow fas fa-tag"></i>
+              </div>
+              <span>{formatPrice(event.price)}</span>
+            </div>
+          </div>
+          
+          <!-- Boutons d'action flottants -->
+          <div class="flex flex-wrap gap-4 mt-8 action-buttons">
+            <a 
+              href="#registration" 
+              class="inline-flex items-center px-6 py-3 text-sm font-medium text-black transition-all duration-300 rounded-full shadow-lg bg-benin-yellow hover:bg-benin-yellow-400 hover:shadow-xl register-btn"
+            >
+              <i class="mr-2 fas fa-ticket-alt"></i>
+              Je participe
+            </a>
+            
+            <ShareButtons client:visible eventUrl={Astro.url.href} eventTitle={event.title} />
+          </div>
+        </div>
+        
+        <!-- Forme décorative -->
+        <div class="absolute bottom-0 left-0 right-0 h-16 wave-divider">
+          <svg viewBox="0 0 1200 120" preserveAspectRatio="none" class="relative w-full h-full text-white">
+            <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" class="fill-current"></path>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Contenu principal avec effet d'ombre portée -->
+      <div class="relative z-10 bg-white">
+        <div class="container px-4 py-12 mx-auto md:px-8">
+          <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+            <!-- Colonne gauche: description et détails -->
+            <div class="lg:col-span-2">
+              <!-- Description avec typographie améliorée -->
+              <div class="p-8 mb-8 bg-white shadow-sm rounded-xl content-section">
+                <h2 class="relative mb-6 text-2xl font-bold text-benin-green-900 section-title">
+                  À propos de cet événement
+                  <span class="absolute bottom-0 left-0 w-16 h-1 bg-benin-green"></span>
+                </h2>
+                <div class="prose prose-lg max-w-none">
+                  <p class="text-gray-700 first-letter:text-4xl first-letter:font-bold first-letter:text-benin-green first-letter:mr-1 first-letter:float-left">
+                    {event.description}
+                  </p>
+                </div>
+                
+                <!-- Tags avec hover effects -->
+                {event.tags && event.tags.length > 0 && (
+                  <div class="flex flex-wrap gap-2 mt-6">
+                    {event.tags.map((tag) => (
+                      <span 
+                        class="px-3 py-1 text-sm font-medium transition-all duration-300 rounded-full cursor-pointer bg-benin-green-50 text-benin-green-700 hover:bg-benin-green-100 hover:scale-105"
+                      >
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              <!-- Programme avec timeline stylisée -->
+              {event.schedule && event.schedule.length > 0 && (
+                <div class="p-8 mb-8 bg-white shadow-sm rounded-xl content-section">
+                  <h2 class="relative mb-6 text-2xl font-bold text-benin-green-900 section-title">
+                    Programme de l'événement
+                    <span class="absolute bottom-0 left-0 w-16 h-1 bg-benin-green"></span>
+                  </h2>
+                  <div class="space-y-6 timeline">
+                    {event.schedule.map((item, index) => (
+                      <div class="relative pl-8 timeline-item">
+                        <div class="absolute top-0 left-0 w-px h-full bg-benin-green-200 timeline-line"></div>
+                        <div class="absolute top-0 left-0 flex items-center justify-center w-6 h-6 -ml-3 rounded-full bg-benin-green timeline-dot">
+                          <div class="w-2 h-2 bg-white rounded-full pulse-animation"></div>
+                        </div>
+                        <div class="p-5 border-l-4 rounded-lg shadow-sm border-benin-green bg-benin-green-50/50 timeline-content">
+                          <div class="mb-2 timeline-header">
+                            <div class="font-bold text-benin-green-700">{formatDateLong(item.date)}</div>
+                            <div class="text-sm text-gray-600">{item.time}</div>
+                          </div>
+                          <div class="timeline-description">
+                            <p class="text-gray-700">{item.description}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              <!-- Section d'inscription -->
+              <div id="registration" class="p-8 mb-8 shadow-lg bg-benin-green-900 rounded-xl content-section">
+                <h2 class="relative mb-6 text-2xl font-bold text-white section-title">
+                  Réservez votre place
+                  <span class="absolute bottom-0 left-0 w-16 h-1 bg-benin-yellow"></span>
+                </h2>
+                <p class="mb-6 text-white/80">
+                  Ne manquez pas cet événement unique. Inscrivez-vous maintenant pour garantir votre participation à {event.title}.
+                </p>
+                <EventRegistration client:visible event={event} />
+              </div>
+            </div>
+            
+            <!-- Colonne droite: informations pratiques et carte -->
+            <div>
+              <!-- Carte flottante avec effet de profondeur -->
+              <div class="sticky p-8 bg-white shadow-lg rounded-xl top-8 info-card">
+                <h2 class="relative mb-6 text-xl font-bold text-benin-green-900 section-title">
+                  Informations pratiques
+                  <span class="absolute bottom-0 left-0 w-12 h-1 bg-benin-green"></span>
+                </h2>
+                
+                <div class="space-y-6">
+                  <!-- Prix détaillé avec design amélioré -->
+                  <div class="flex items-start gap-3 info-item">
+                    <div class="p-3 rounded-full bg-benin-green-50 icon-wrapper">
+                      <i class="text-benin-green fas fa-ticket-alt"></i>
+                    </div>
+                    <div class="info-content">
+                      <h3 class="font-medium text-gray-800">Prix d'entrée</h3>
+                      <p class="text-2xl font-bold text-benin-green">{formatPrice(event.price)}</p>
+                    </div>
+                  </div>
+                  
+                  <!-- Horaires avec style amélioré -->
+                  <div class="flex items-start gap-3 info-item">
+                    <div class="p-3 rounded-full bg-benin-green-50 icon-wrapper">
+                      <i class="text-benin-green fas fa-clock"></i>
+                    </div>
+                    <div class="info-content">
+                      <h3 class="font-medium text-gray-800">Date et horaires</h3>
+                      <div class="flex items-center mt-1 date-badge">
+                        <div class="flex flex-col items-center justify-center w-12 h-12 mr-3 text-white rounded-lg bg-benin-green">
+                          <span class="text-xs">{new Date(event.date).toLocaleDateString('fr-FR', {month: 'short'})}</span>
+                          <span class="text-xl font-bold">{new Date(event.date).getDate()}</span>
+                        </div>
+                        <div>
+                          <p class="font-medium">
+                            {formatDateLong(event.date)}
+                            {event.endDate && event.endDate !== event.date && (
+                              <span class="block text-sm text-gray-600">au {formatDateLong(event.endDate)}</span>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                      {event.schedule && event.schedule.some(item => item.time) && (
+                        <p class="mt-2 text-sm text-gray-600">
+                          <i class="mr-1 fas fa-info-circle text-benin-green-600"></i>
+                          Consultez le programme pour les horaires détaillés
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <!-- Lieu avec style amélioré -->
+                  <div class="flex items-start gap-3 info-item">
+                    <div class="p-3 rounded-full bg-benin-green-50 icon-wrapper">
+                      <i class="text-benin-green fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="info-content">
+                      <h3 class="font-medium text-gray-800">Lieu</h3>
+                      <p class="font-medium text-gray-800">{event.location}</p>
+                      <p class="text-gray-600">{event.region}</p>
+                      {event.coordinates && (
+                        <a 
+                          href={`https://www.google.com/maps/search/?api=1&query=${event.coordinates.lat},${event.coordinates.lng}`}
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          class="inline-flex items-center mt-2 text-sm text-benin-green hover:underline"
+                        >
+                          <i class="mr-1 fas fa-directions"></i> Itinéraire
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <!-- Contact avec style amélioré -->
+                  <div class="flex items-start gap-3 info-item">
+                    <div class="p-3 rounded-full bg-benin-green-50 icon-wrapper">
+                      <i class="text-benin-green fas fa-address-card"></i>
+                    </div>
+                    <div class="info-content">
+                      <h3 class="font-medium text-gray-800">Contact organisateur</h3>
+                      {event.contact.phone && (
+                        <p class="flex items-center mt-1 text-gray-700">
+                          <i class="w-5 mr-2 text-center fas fa-phone text-benin-green-600"></i>
+                          <a href={`tel:${event.contact.phone}`} class="hover:text-benin-green">
+                            {event.contact.phone}
+                          </a>
+                        </p>
+                      )}
+                      {event.contact.email && (
+                        <p class="flex items-center mt-1 text-gray-700">
+                          <i class="w-5 mr-2 text-center fas fa-envelope text-benin-green-600"></i>
+                          <a href={`mailto:${event.contact.email}`} class="hover:text-benin-green">
+                            {event.contact.email}
+                          </a>
+                        </p>
+                      )}
+                      {event.contact.website && (
+                        <p class="flex items-center mt-1 text-gray-700">
+                          <i class="w-5 mr-2 text-center fas fa-globe text-benin-green-600"></i>
+                          <a 
+                            href={event.contact.website} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            class="hover:text-benin-green"
+                          >
+                            Site officiel
+                          </a>
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Bouton réservation/participation -->
+                <a 
+                  href="#registration" 
+                  class="flex items-center justify-center w-full px-6 py-4 mt-8 text-white transition-all duration-300 border-2 rounded-lg bg-benin-green border-benin-green hover:bg-transparent hover:text-benin-green"
+                >
+                  <i class="mr-2 fas fa-ticket-alt"></i>
+                  Je veux participer
+                </a>
+              </div>
+              
+            
+            </div>
+          </div>
+          
+          <!-- Événements similaires avec effet de carte -->
+          {relatedEvents.length > 0 && (
+            <div class="mt-16 similar-events-section">
+              <h2 class="relative mb-8 text-2xl font-bold text-benin-green-900 section-title">
+                Événements similaires
+                <span class="absolute bottom-0 left-0 w-16 h-1 bg-benin-green"></span>
+              </h2>
+              <SimilarEvents client:visible events={relatedEvents} />
+            </div>
+          )}
+        </div>
+      </div>
+      
+      <!-- Bouton retour flottant -->
+      <a 
+        href="/evenements" 
+        class="fixed z-50 flex items-center justify-center w-12 h-12 text-white transition-all duration-300 rounded-full shadow-lg bottom-8 right-8 bg-benin-green hover:bg-benin-green-700 hover:scale-110"
+        aria-label="Retour aux événements"
+      >
+        <i class="fas fa-arrow-left"></i>
+      </a>
+    </main>
+  )}
+</Layout>
+
+<script>
+import gsap from 'gsap';
+import ScrollTrigger from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
+// Animation au chargement avec GSAP
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.gsap) {
+    const scrollTrigger = window.ScrollTrigger;
+    gsap.registerPlugin(scrollTrigger);
+    
+    // Effet parallaxe sur l'image de fond
+    gsap.to('.parallax-bg img', {
+      scrollTrigger: {
+        trigger: '.event-detail',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true
+      },
+      y: 100,
+      scale: 1.15
+    });
+    
+    // Animation des sections au scroll
+    gsap.utils.toArray('.content-section').forEach((section, i) => {
+      gsap.from(section, {
+        scrollTrigger: {
+          trigger: section,
+          start: 'top 80%',
+          toggleActions: 'play none none none'
+        },
+        y: 50,
+        opacity: 0,
+        duration: 0.8,
+        delay: i * 0.1
+      });
+    });
+    
+    // Animation de la timeline
+    gsap.utils.toArray('.timeline-item').forEach((item, i) => {
+      gsap.from(item, {
+        scrollTrigger: {
+          trigger: item,
+          start: 'top 85%',
+          toggleActions: 'play none none none'
+        },
+        x: -30,
+        opacity: 0,
+        duration: 0.6,
+        delay: i * 0.15
+      });
+    });
+    
+    // Animation des badges
+    gsap.from('.shimmer-badge', {
+      opacity: 0,
+      scale: 0.8,
+      duration: 0.6,
+      ease: 'back.out(1.7)'
+    });
+    
+    // Animation du titre
+    gsap.from('.event-title', {
+      opacity: 0,
+      y: 20,
+      duration: 0.8,
+      ease: 'power2.out',
+      delay: 0.3
+    });
+    
+    // Animation des méta-données
+    gsap.from('.event-meta > div', {
+      opacity: 0,
+      x: -20,
+      stagger: 0.15,
+      duration: 0.6,
+      delay: 0.5
+    });
+    
+    // Animation des boutons d'action
+    gsap.from('.action-buttons > *', {
+      opacity: 0,
+      y: 20,
+      stagger: 0.2,
+      duration: 0.6,
+      delay: 0.7,
+      ease: 'back.out(1.7)'
+    });
+  }
+});
+</script>
+
+<style>
+/* Styles de base */
+.event-detail {
+  --benin-pattern: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.bg-pattern {
+  background-image: var(--benin-pattern);
+}
+
+/* Animation de pulsation */
+.pulse-animation {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 115, 88, 0.7);
+  }
+  
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(16, 115, 88, 0);
+  }
+  
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 115, 88, 0);
+  }
+}
+
+/* Animation des badges */
+.shimmer-badge {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-badge::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(30deg);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) rotate(30deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(30deg);
+  }
+}
+
+/* Stylisation de la première lettre */
+.content-section p:first-of-type::first-letter {
+  font-family: "Georgia", serif;
+}
+
+/* Stylisation de la timeline */
+.timeline-item {
+  transition: transform 0.3s ease;
+}
+
+.timeline-item:hover {
+  transform: translateX(5px);
+}
+
+.timeline-line {
+  transition: background-color 0.3s ease;
+}
+
+.timeline-item:hover .timeline-line {
+  background-color: var(--color-benin-green);
+}
+
+/* Stylisation de la carte info */
+.info-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.info-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.info-item {
+  transition: transform 0.3s ease;
+}
+
+.info-item:hover {
+  transform: translateX(5px);
+}
+
+.icon-wrapper {
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.info-item:hover .icon-wrapper {
+  background-color: var(--color-benin-green-100);
+  transform: scale(1.1);
+}
+
+/* Animation effet vague */
+.wave-divider {
+  overflow: hidden;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .action-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .action-buttons > a {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .info-card {
+    position: relative;
+    top: 0;
+    margin-top: 2rem;
+  }
+}
+</style>

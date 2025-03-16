@@ -118,13 +118,13 @@
             
             <!-- Boutons d'action -->
             <div class="flex flex-wrap gap-4">
-              <button class="px-6 py-3 font-semibold text-white transition-all duration-300 rounded-lg bg-benin-green hover:bg-benin-green-600 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-benin-green focus:ring-offset-2">
+              <a href="/hebergement/royal-palm-hotel-spa" class="px-6 py-3 font-semibold text-white transition-all duration-300 rounded-lg bg-benin-green hover:bg-benin-green-600 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-benin-green focus:ring-offset-2 inline-flex items-center">
                 <i class="mr-2 fas fa-hotel"></i> Voir les chambres
-              </button>
+              </a>
               
-              <button class="px-6 py-3 font-semibold transition-all duration-300 border-2 rounded-lg border-benin-green text-benin-green hover:bg-benin-green-50 hover:scale-105 focus:outline-none focus:ring-2">
+              <a href="/hebergement/royal-palm-hotel-spa" class="px-6 py-3 font-semibold transition-all duration-300 border-2 rounded-lg border-benin-green text-benin-green hover:bg-benin-green-50 hover:scale-105 focus:outline-none focus:ring-2 inline-flex items-center">
                 <i class="mr-2 fas fa-images"></i> Toutes les photos
-              </button>
+              </a>
             </div>
           </div>
         </div>

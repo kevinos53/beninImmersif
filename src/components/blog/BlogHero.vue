@@ -65,7 +65,7 @@ function formatDate(date: Date): string {
               <img 
                 :src="article.author.avatar" 
                 :alt="article.author.name"
-                class="w-10 h-10 mr-3 rounded-full"
+                class="w-10 h-10 mr-3 rounded-full hidden"
               >
               <div class="text-left">
                 <div class="font-medium text-gray-900">{{ article.author.name }}</div>

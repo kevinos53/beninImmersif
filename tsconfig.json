@@ -1,12 +1,24 @@
 {
   "extends": "astro/tsconfigs/strict",
-  "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"],
+  "include": [".astro/types.d.ts", "**/*","src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/**/*.astro"],
+  "exclude": ["dist", "node_modules"],
   "compilerOptions": {
     "allowJs": true,
+    "jsxImportSource": "vue",
     "jsx": "preserve",
-    "types": ["astro/client"]
+    "types": ["astro/client","vite/client", "@nanostores/vue"],
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": ["src/components/*"],
+      "@layouts/*": ["src/layouts/*"],
+      "@stores/*": ["src/stores/*"],
+      "@types/*": ["src/types/*"]
+    },
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true
     // "strictNullChecks": true, // ajouter si vous utilisez le modèle `base`
     // "allowJs": true // requis et inclus avec tous les modèles Astro
-  }
+  },
+
 }
